@@ -74,8 +74,8 @@ const Products = () => {
   return (
     <>
       <Navbar/>
-      <div className="grid grid-cols-4  bg-slate-200 mx-8 rounded-lg my-8 shadow-md shadow-black">
-        <div className="border-r-4 border-stone-800 overflow-auto">
+      <div className="grid grid-cols-8 bg-slate-200  rounded-lg  shadow-md shadow-black">
+        <div className="border-r-4 md:col-span-3 lg:col-span-2 md:block hidden  border-stone-800 overflow-auto">
           <div className="border-b-2 border-stone-700 py-4">
             <h1 className="text-xl font-bold text-center mb-2">Category</h1>
             <ul className="text-center w-max mx-auto space-y-2">
@@ -119,9 +119,32 @@ const Products = () => {
             </ul>
           </div>
         </div>
-        <div className="col-span-3">
-          <div className="w-full flex justify-end py-2 px-6">
-            <div>
+        <div className="lg:col-span-6 md:col-span-5 col-span-8">
+            <div className=" w-full flex flex-wrap gap-3 justify-between py-2 px-6"> 
+            <select className="px-4  md:hidden py-2 bg-white font-bold" onChange={(e)=>handleSortByProducts(e)}>
+                <option className="px-4 py-2">Choose brand</option>
+                {brandsArray.map((option) => {
+                  return (
+                    <option
+                      className="px-4 py-2"
+                      value={option.value}>
+                      {option.value}
+                    </option>
+                  );
+                })}
+              </select>
+              <select className="px-4 py-2  md:hidden  bg-white font-bold" onChange={(e)=>handleSortByProducts(e)}>
+                <option className="px-4 py-2">choose category</option>
+                {categoryArray.map((option) => {
+                  return (
+                    <option
+                      className="px-4 py-2"
+                      value={option.value}>
+                      {option.value}
+                    </option>
+                  );
+                })}
+              </select>
               <select className="px-4 py-2 bg-white font-bold" onChange={(e)=>handleSortByProducts(e)}>
                 <option className="px-4 py-2">Sort By</option>
                 {sortOptions.map((option) => {
@@ -135,8 +158,8 @@ const Products = () => {
                 })}
               </select>
             </div>
-          </div>
-          <div className="grid grid-cols-2 lg:grid-cols-3 m-4 gap-4">
+          
+          <div className="grid sm:grid-cols-2 grid-cols-1 lg:grid-cols-3 m-4 gap-4">
           {
             ProductArray && ProductArray.map((ProductDetails, index)=>{
               return (<Productcard ProductDetails={ProductDetails} />)
@@ -164,7 +187,6 @@ const Products = () => {
                 </li>
                   </ul>
                 </nav>
-              
               </div>
           </div>
           </div>

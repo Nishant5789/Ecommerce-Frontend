@@ -2,11 +2,9 @@ import React from 'react'
 import { Link } from 'react-router-dom'
 
 const Productcard = ({ProductDetails}) => {
-
   const { brand,category,description,discountPercentage,id,images, price, rating, stock, thumbnail ,title} = ProductDetails;
-
   return (
-    <div class="max-w-2xl mx-auto">
+    <div class="max-w-2xl mx-auto col-span-2 md:col-span-1">
     <div class="bg-white shadow-md rounded-lg max-w-sm dark:bg-gray-800 dark:border-gray-700">
       <Link href="#">
         <img
