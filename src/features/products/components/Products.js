@@ -1,176 +1,27 @@
-import React, { useState } from "react";
-import { Link } from "react-router-dom";
+/* eslint-disable react-hooks/exhaustive-deps */
+import React, { useEffect, useState } from "react";
 import Productcard from "./Productcard";
 import Navbar from "../../navbar/Navbar";
+import { fetchBrandAsync, fetchCategoryAsync, fetchProductsAsync, selectBrand, selectCategory, selectProducts } from "../productSlice";
+import { useDispatch, useSelector } from "react-redux";
 
 const Products = () => {
-
-  const {currentPage, setCurrentPage} = useState(1);
+  const [currentPage, setCurrentPage] = useState(1);
   
-  const CategoryArray = [
+  const oldCategoryArray = [
     {
       label: "smartphones",
       value: "smartphones",
       checked: false,
-    },
-    {
-      label: "laptops",
-      value: "laptops",
-      checked: false,
-    },
-    {
-      label: "fragrances",
-      value: "fragrances",
-      checked: false,
-    },
-    {
-      label: "skincare",
-      value: "skincare",
-      checked: false,
-    },
-    {
-      label: "groceries",
-      value: "groceries",
-      checked: false,
-    },
-    {
-      label: "home-decoration",
-      value: "home-decoration",
-      checked: false,
-    },
+    }
   ];
 
-  const brandsArray = [
-    {
-      label: "Apple",
-      value: "Apple",
-      checked: false,
-    },
-    {
-      label: "Samsung",
-      value: "Samsung",
-      checked: false,
-    },
-    {
-      label: "OPPO",
-      value: "OPPO",
-      checked: false,
-    },
-    {
-      label: "Huawei",
-      value: "Huawei",
-      checked: false,
-    },
-    {
-      label: "Microsoft Surface",
-      value: "Microsoft Surface",
-      checked: false,
-    },
-    {
-      label: "Infinix",
-      value: "Infinix",
-      checked: false,
-    },
-    {
-      label: "HP Pavilion",
-      value: "HP Pavilion",
-      checked: false,
-    },
-    {
-      label: "Royal_Mirage",
-      value: "Royal_Mirage",
-      checked: false,
-    },
-    {
-      label: "Fog Scent Xpressio",
-      value: "Fog Scent Xpressio",
-      checked: false,
-    },
-    {
-      label: "Al Munakh",
-      value: "Al Munakh",
-      checked: false,
-    },
-    {
-      label: "Lord - Al-Rehab",
-      value: "Lord - Al-Rehab",
-      checked: false,
-    },
-    {
-      label: "L'Oreal Paris",
-      value: "L'Oreal Paris",
-      checked: false,
-    },
-    {
-      label: "Hemani Tea",
-      value: "Hemani Tea",
-      checked: false,
-    },
-    {
-      label: "Dermive",
-      value: "Dermive",
-      checked: false,
-    },
-    {
-      label: "ROREC White Rice",
-      value: "ROREC White Rice",
-      checked: false,
-    },
-    {
-      label: "Fair & Clear",
-      value: "Fair & Clear",
-      checked: false,
-    },
-    {
-      label: "Saaf & Khaas",
-      value: "Saaf & Khaas",
-      checked: false,
-    },
-    {
-      label: "Bake Parlor Big",
-      value: "Bake Parlor Big",
-      checked: false,
-    },
-    {
-      label: "Baking Food Items",
-      value: "Baking Food Items",
-      checked: false,
-    },
-    {
-      label: "fauji",
-      value: "fauji",
-      checked: false,
-    },
-    {
-      label: "Dry Rose",
-      value: "Dry Rose",
-      checked: false,
-    },
-    {
-      label: "Boho Decor",
-      value: "Boho Decor",
-      checked: false,
-    },
-    {
-      label: "Flying Wooden",
-      value: "Flying Wooden",
-      checked: false,
-    },
-    {
-      label: "LED Lights",
-      value: "LED Lights",
-      checked: false,
-    },
-    {
-      label: "luxury palace",
-      value: "luxury palace",
-      checked: false,
-    },
+  const oldbrandsArray = [
     {
       label: "Golden",
       value: "Golden",
       checked: false,
-    },
+    }
   ];
 
   const sortOptions = [
@@ -189,15 +40,36 @@ const Products = () => {
     },
   ];
 
-  const totalProducts = 100;
+  const ProductArray =  useSelector(selectProducts);
+  const categoryArray =  useSelector(selectCategory);
+  const brandsArray =  useSelector(selectBrand);
+  const dispatch = useDispatch();
+
+  // console.log(categoryArray);
+  // console.log(brandsArray);
+  const totalProducts = 28;
   const totalProductsPerPage = 9;
-  const totalPages = Math.ceil(totalProducts / totalProductsPerPage);
+  const totalPages = Math.ceil(totalProducts/totalProductsPerPage);
 
   const paginationArray = Array.from({ length: totalPages }, (_, index) => index+1);
   
-  const handlePagination = ()=>{
-
+  const handlePagination =(PageNO, totalProductsPerPage)=>{
+    if(PageNO>=1 && PageNO<=totalPages){
+      console.log(PageNO, totalProductsPerPage);
+      dispatch(fetchProductsAsync({page:PageNO, limit:totalProductsPerPage}));
+      setCurrentPage(PageNO);
+    }
   }
+
+  const handleSortByProducts = (e) => {
+    console.log(e.target.value);
+  }
+
+  useEffect(()=>{
+    dispatch(fetchProductsAsync({page:currentPage, limit:totalProductsPerPage}));
+    dispatch(fetchBrandAsync());
+    dispatch(fetchCategoryAsync());
+  },[])
 
   return (
     <>
@@ -207,7 +79,7 @@ const Products = () => {
           <div className="border-b-2 border-stone-700 py-4">
             <h1 className="text-xl font-bold text-center mb-2">Category</h1>
             <ul className="text-center w-max mx-auto space-y-2">
-              {CategoryArray.map((Category) => {
+              {categoryArray && categoryArray.map((Category) => {
                 return (
                   <li className="flex justify-between capitalize text-xl font-sans ">
                     <label
@@ -228,7 +100,7 @@ const Products = () => {
           <div className="border-b-2 border-stone-700 py-4">
             <h1 className="text-xl font-bold text-center mb-2">Brands</h1>
             <ul className="text-center w-max mx-auto space-y-2">
-              {brandsArray.map((brand) => {
+              {brandsArray && brandsArray.map((brand) => {
                 return (
                   <li className="flex justify-between capitalize text-xl  font-sans ">
                     <label
@@ -250,7 +122,7 @@ const Products = () => {
         <div className="col-span-3">
           <div className="w-full flex justify-end py-2 px-6">
             <div>
-              <select className="px-4 py-2 bg-white font-bold">
+              <select className="px-4 py-2 bg-white font-bold" onChange={(e)=>handleSortByProducts(e)}>
                 <option className="px-4 py-2">Sort By</option>
                 {sortOptions.map((option) => {
                   return (
@@ -264,20 +136,20 @@ const Products = () => {
               </select>
             </div>
           </div>
-          <div className="grid grid-cols-3 m-4 gap-4">
+          <div className="grid grid-cols-2 lg:grid-cols-3 m-4 gap-4">
           {
-            Array.from({ length: 9 }, (_, index) => index+1).map((currItem, index)=>{
-              return ( <Productcard />)
+            ProductArray && ProductArray.map((ProductDetails, index)=>{
+              return (<Productcard ProductDetails={ProductDetails} />)
             })
           }
-            <div className="col-span-3 flex justify-end py-3 ">
+          <div className="col-span-2 lg:col-span-3 flex justify-end py-3 ">
               <div className="max-w-2xl mx-auto">
                 <nav aria-label="Page navigation example">
                   <ul className="inline-flex space-x-">
-                  <li className="bg-white border border-gray-300 text-gray-500 hover:bg-gray-100 hover:text-gray-700 ml-0 rounded-l-lg leading-tight py-3 px-5 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
+                <li className="bg-white border border-gray-300 text-gray-500 hover:bg-gray-100 hover:text-gray-700 ml-0 rounded-l-lg leading-tight py-3 px-5 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
                         onClick={()=>handlePagination(currentPage-1, totalProductsPerPage)} >
                         Previous
-                    </li>
+                </li>
                 {
                   paginationArray.map((PageNO, index)=>{
                     return (                   
@@ -289,13 +161,12 @@ const Products = () => {
                 <li className="bg-white border border-gray-300 text-gray-500 hover:bg-gray-100 hover:text-gray-700 rounded-r-lg leading-tight py-3 px-5 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
                         onClick={()=>handlePagination(currentPage+1, totalProductsPerPage)} >
                         Next
-                    </li>
-               
+                </li>
                   </ul>
                 </nav>
               
               </div>
-            </div>
+          </div>
           </div>
         </div>
       </div>
