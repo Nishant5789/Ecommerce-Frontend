@@ -6,6 +6,8 @@ import Cart from "./features/cart/Cart";
 import Products from "./features/products/components/Products";
 import Checkout from "./features/checkout/Checkout";
 
+
+
 function App() { 
   return (
     <>
