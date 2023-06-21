@@ -2,11 +2,13 @@
 import React, { useEffect, useState } from "react";
 import Productcard from "./Productcard";
 import Navbar from "../../navbar/Navbar";
-import { fetchBrandAsync, fetchCategoryAsync, fetchProductsAsync, selectBrand, selectCategory, selectProducts } from "../productSlice";
+import { fetchBrandAsync, fetchCategoryAsync, fetchProductsAsync, selectBrand, selectCategory, selectProducts, selectTotalFetchProducts } from "../productSlice";
 import { useDispatch, useSelector } from "react-redux";
 
 const Products = () => {
   const [currentPage, setCurrentPage] = useState(1);
+  const [categoryCheckboxes, setCategoryCheckboxes] = useState([]);
+  const [brandsCheckboxes, setBrandsCheckboxes] = useState([]);
   
   const oldCategoryArray = [
     {
@@ -47,8 +49,8 @@ const Products = () => {
 
   // console.log(categoryArray);
   // console.log(brandsArray);
-  const totalProducts = 28;
-  const totalProductsPerPage = 9;
+  const totalProducts = useSelector(selectTotalFetchProducts);
+  const totalProductsPerPage = 10;
   const totalPages = Math.ceil(totalProducts/totalProductsPerPage);
 
   const paginationArray = Array.from({ length: totalPages }, (_, index) => index+1);
@@ -56,7 +58,7 @@ const Products = () => {
   const handlePagination =(PageNO, totalProductsPerPage)=>{
     if(PageNO>=1 && PageNO<=totalPages){
       console.log(PageNO, totalProductsPerPage);
-      dispatch(fetchProductsAsync({page:PageNO, limit:totalProductsPerPage}));
+      dispatch(fetchProductsAsync({_page:PageNO, _limit:totalProductsPerPage}));
       setCurrentPage(PageNO);
     }
   }
@@ -65,8 +67,36 @@ const Products = () => {
     console.log(e.target.value);
   }
 
+  const handleFilterCategory = (e) => {
+    const {value, checked} = e.target;
+    console.log(value, checked);
+    if(checked)
+    {
+      setCategoryCheckboxes([...categoryCheckboxes, value]);
+      dispatch(fetchProductsAsync({_page:currentPage, _limit:totalProductsPerPage, category: value}));
+    }
+    else{
+      setCategoryCheckboxes(categoryCheckboxes.filter((item)=>item!==value));
+      dispatch(fetchProductsAsync({_page:currentPage, _limit:totalProductsPerPage}));
+    }
+  }
+
+  const handleFilterBrands = (e) => {
+    const {value, checked} = e.target;
+    console.log(value, checked);
+    if(checked)
+    {
+      setBrandsCheckboxes([...brandsCheckboxes, value]);
+      dispatch(fetchProductsAsync({_page:currentPage, _limit:totalProductsPerPage, brand: value}));
+    }
+    else{
+      setBrandsCheckboxes(brandsCheckboxes.filter((item)=>item!==value));
+      dispatch(fetchProductsAsync({_page:currentPage, _limit:totalProductsPerPage}));
+    }
+  }
+
   useEffect(()=>{
-    dispatch(fetchProductsAsync({page:currentPage, limit:totalProductsPerPage}));
+    dispatch(fetchProductsAsync({_page:currentPage, _limit:totalProductsPerPage}));
     dispatch(fetchBrandAsync());
     dispatch(fetchCategoryAsync());
   },[])
@@ -79,9 +109,9 @@ const Products = () => {
           <div className="border-b-2 border-stone-700 py-4">
             <h1 className="text-xl font-bold text-center mb-2">Category</h1>
             <ul className="text-center w-max mx-auto space-y-2">
-              {categoryArray && categoryArray.map((Category) => {
+              {categoryArray && categoryArray.map((Category, index) => {
                 return (
-                  <li className="flex justify-between capitalize text-xl font-sans ">
+                  <li className="flex justify-between capitalize text-xl font-sans" key={index}>
                     <label
                       htmlFor=""
                       className="pr-2">
@@ -89,8 +119,9 @@ const Products = () => {
                     </label>
                     <input
                       type="checkbox"
-                      checked={Category.checked}
-                      name={Category.value}
+                      checked={categoryCheckboxes.includes(Category.value)}
+                      value={Category.value}
+                      onChange={(e)=>handleFilterCategory(e)}
                     />
                   </li>
                 );
@@ -110,8 +141,9 @@ const Products = () => {
                     </label>
                     <input
                       type="checkbox"
-                      checked={brand.checked}
-                      name={brand.label}
+                      checked={brandsCheckboxes.includes(brand.value)}
+                      value={brand.value}
+                      onChange={(e)=>handleFilterBrands(e)}
                     />
                   </li>
                 );
