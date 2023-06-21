@@ -1,7 +1,21 @@
 import axios from 'axios'
 
-export function fetchProducts(page, limit) {
-     return axios.get(`http://localhost:8080/products?_page=${page}&_limit=${limit}`);
+export function fetchProducts(queryObject) {
+     const baseUrl = "http://localhost:8080/products?"
+     
+     let queryUrl = Object.keys(queryObject)
+     .map((key) => {
+       if (queryObject[key]) {
+         return `${encodeURIComponent(key)}=${encodeURIComponent(queryObject[key])}`;
+       }
+       return null;
+     })
+     .filter((param) => param !== null)
+     .join("&");
+
+     // console.log(queryUrl);
+     console.log(baseUrl+queryUrl);
+     return axios.get(baseUrl+queryUrl);
 }
 export function fetchCategory() {
      return axios.get('http://localhost:8080/category');

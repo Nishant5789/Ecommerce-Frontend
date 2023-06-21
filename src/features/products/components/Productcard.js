@@ -10,7 +10,7 @@ const Productcard = ({ProductDetails}) => {
         <img
           src={thumbnail}
           alt=""
-          class="rounded-t-lg p-8"
+          class="rounded-t-lg object-cover h-80 w-72 p-8"
         />
       </Link>
       <div class="px-5 pb-5">
