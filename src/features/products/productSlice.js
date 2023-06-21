@@ -1,10 +1,22 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import {  fetchBrands, fetchCategory, fetchProducts } from './ProductsApi';
+import { getTotalProductsPerPage } from '../../app/constant';
+
+const queryObject = {
+  category: "",
+  brand: "",
+  _sort: "",
+  _order: "",
+  _page: 1,
+  _limit: getTotalProductsPerPage(),
+  isupdated: false,
+};
 
 const initialState = {
   products: [], 
   brands: [], 
   category: [], 
+  queryUrlObject: queryObject,
   totalFetchProducts: 0, 
   status: 'idle',
 };
@@ -12,7 +24,7 @@ const initialState = {
 export const fetchProductsAsync = createAsyncThunk(
   'products/fetchProduct',
   async (queryObject) => {
-    console.log(queryObject);
+    // console.log(queryObject);
     const {data, headers} = await fetchProducts(queryObject);
     console.log(headers["x-total-count"]);
     return {productData: data,totalFetchProducts: headers["x-total-count"]};
@@ -35,10 +47,20 @@ export const fetchBrandAsync = createAsyncThunk(
   }
 );
 
+
 export const productsSlice = createSlice({
   name: 'products',
   initialState,
   reducers: {
+    updateQueryUrl(state, action){
+      const itemKey = Object.keys(action.payload);
+      const itemValue = Object.values(action.payload);
+      // console.log({itemKey, itemValue});
+      state.queryUrlObject = {...state.queryUrlObject, [itemKey[0]]: itemValue[0], isupdated: true};
+    },
+    resetQueryUrl(state, action){
+      state.queryUrlObject = action.payload;
+    }
   },
   extraReducers: (builder) => {
     builder
@@ -68,11 +90,12 @@ export const productsSlice = createSlice({
   },
 });
 
-// export const { } = productsSlice.actions;
+export const { updateQueryUrl } = productsSlice.actions;
 
 export const selectProducts = (state)=>state.product.products;
 export const selectBrand = (state)=>state.product.brands;
 export const selectTotalFetchProducts = (state)=>state.product.totalFetchProducts;
 export const selectCategory = (state)=>state.product.category;
+export const selectQueryUrl = (state)=>state.product.queryUrlObject;
 
 export default productsSlice.reducer;
