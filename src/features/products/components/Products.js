@@ -1,31 +1,36 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, {  useState } from "react";
+import React, {  useEffect, useState } from "react";
 import Navbar from "../../navbar/Navbar";
-import { selectBrand, selectCategory } from "../productSlice";
-import {  useSelector } from "react-redux";
+import { fetchProductsAsync, selectBrand, selectCategory, selectQueryUrl, updateQueryUrl } from "../productSlice";
+import {  useDispatch, useSelector } from "react-redux";
 import ProductFilter from "./ProductFilter";
 import ProductList from "./ProductList";
 import ProductPagination from "./ProductPagination";
+import { getTotalProductsPerPage } from "../../../app/constant";
 
 const Products = () => {
   const [currentPage, setCurrentPage] = useState(1);
+  const dispatch = useDispatch();
+  const totalProductPerPage = getTotalProductsPerPage();
+  const queryUrlObject = useSelector(selectQueryUrl);
+
   
   const sortOptions = [
     { name: "Best Rating", sort: "rating", order: "desc", current: false },
     {
       name: "Price: Low to High",
-      sort: "discountPrice",
+      sort: "price",
       order: "asc",
       current: false,
     },
     {
       name: "Price: High to Low",
-      sort: "discountPrice",
+      sort: "price",
       order: "desc",
       current: false,
     },
   ];
-  
+
   const categoryArray =  useSelector(selectCategory);
   const brandsArray =  useSelector(selectBrand);
 
@@ -33,8 +38,23 @@ const Products = () => {
   // console.log(brandsArray);
 
   const handleSortByProducts = (e) => {
-    console.log(e.target.value);
+    if(e.target.value !== "Sort By")
+    {
+      const selectOption = sortOptions.filter((option)=>option.name === e.target.value);
+      console.log(selectOption);
+      const {sort, order} = selectOption[0];
+      // console.log({sort, order});
+      dispatch(updateQueryUrl({_sort:sort}));
+      dispatch(updateQueryUrl({_order:order}));
+    }
   }
+
+    useEffect(()=>{
+      if(queryUrlObject.isupdated){
+          dispatch(fetchProductsAsync(queryUrlObject));
+      }
+  },[queryUrlObject])
+
   return (
     <> 
       <Navbar/>
@@ -76,7 +96,7 @@ const Products = () => {
                     <option
                       className="px-4 py-2"
                       value={option.name}>
-                      {option.name}
+                      {option.name} 
                     </option>
                   );
                 })}
