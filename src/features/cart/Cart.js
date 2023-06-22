@@ -1,5 +1,5 @@
 import React from 'react'
-import Navbar from '../navbar/Navbar'
+import Navbar from '../navbar & spinner/Navbar'
 import { Link } from 'react-router-dom'
 
 const Cart = () => {

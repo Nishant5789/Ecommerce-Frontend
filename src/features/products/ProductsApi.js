@@ -17,6 +17,9 @@ export function fetchProducts(queryObject) {
      console.log(baseUrl+queryUrl);
      return axios.get(baseUrl+queryUrl);
 }
+export function fetchProductById(productId) {
+     return axios.get(`http://localhost:8080/products/${productId}`);
+}
 export function fetchCategory() {
      return axios.get('http://localhost:8080/category');
 }

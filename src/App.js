@@ -5,6 +5,7 @@ import Register from "./features/auth/components/Register";
 import Cart from "./features/cart/Cart";
 import Products from "./features/products/components/Products";
 import Checkout from "./features/checkout/Checkout";
+import ProductDetail from "./features/products/components/ProductDetail";
 
 
 
@@ -14,6 +15,7 @@ function App() {
         <BrowserRouter>
         <Routes>
           <Route path="/" element={<Products/>}/>
+          <Route path="/product/:productId" element={<ProductDetail/>}/>
           <Route path="/login" element={<Login/>}/>
           <Route path="/register" element={<Register/>}/>
           <Route path="/cart" element={<Cart/>}/>
