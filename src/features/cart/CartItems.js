@@ -1,12 +1,10 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { fetchCartItemsAsync, removeCartItemsAsync, selectCartItems, updateCartItemsAsync } from "./cartSlice";
+import React from "react";
+import { useDispatch } from "react-redux";
+import { removeCartItemsAsync, updateCartItemsAsync } from "./cartSlice";
 
-const CartItems = () => {
+const CartItems = ({cartItemArray}) => {
   const dispatch = useDispatch();
-  const cartItemArray = useSelector(selectCartItems);
-  // console.log(cartItemArray);
 
   const handleQunatityfield = (currQuatity, cartItemId ,operationType)=>{
     if(operationType === "increse"){
@@ -18,9 +16,6 @@ const CartItems = () => {
   }
 
 
-  useEffect(() => {
-    dispatch(fetchCartItemsAsync());
-  }, []);
 
   return ( 
     <div className="rounded-lg bg-slate-200 p-4  md:w-2/3 h-96 overflow-y-scroll">
