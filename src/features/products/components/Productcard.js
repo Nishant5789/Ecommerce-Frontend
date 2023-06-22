@@ -1,19 +1,26 @@
 import React from 'react'
+import { useDispatch } from 'react-redux';
 import { Link } from 'react-router-dom'
+import { addCartItemsAsync } from '../../cart/cartSlice';
+import { getUserId } from '../../../app/constant';
 
 const Productcard = ({ProductDetails}) => {
+
+  const dispatch = useDispatch();
+
   const { brand,category,description,discountPercentage,id,images, price, rating, stock, thumbnail ,title} = ProductDetails;
   return (
     <div class="max-w-2xl mx-auto col-span-2 md:col-span-1">
+    <div class="bg-white hover:bg-purple-700 text-gray-900 hover:text-white active:bg-purple-500 shadow-2xl shadow-stone-700 rounded-lg max-w-sm duration-800  ">
     <Link to={`/product/${id}`}>
-    <div class="bg-white hover:bg-purple-700 active:bg-purple-500 shadow-2xl shadow-stone-700 rounded-lg max-w-sm duration-800  ">
         <img
           src={thumbnail}
           alt=""
           class="rounded-t-lg object-cover h-80 w-72 p-8"
         />
+      </Link>
       <div class="px-5 pb-5">
-          <h3 class="text-gray-900 font-semibold text-xl tracking-tight dark:text-white">
+          <h3 class=" font-semibold text-xl tracking-tight ">
             {title}
           </h3>
         <div class="flex items-center mt-2.5 mb-5">
@@ -58,18 +65,21 @@ const Productcard = ({ProductDetails}) => {
           </span>
         </div>
         <div class="flex items-center justify-between">
-          <span class="text-3xl font-bold text-gray-900 dark:text-white">
+          <span class="text-3xl font-bold ">
             ${price}
           </span>
-          <Link
-            to="/cart"
+          <button
+            onClick={()=>dispatch(addCartItemsAsync({
+              "user": getUserId(),
+              "product": id
+            }))}
             class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
             Add to cart
-          </Link>
+          </button>
         </div>
       </div>
     </div>
-    </Link>
+   
   </div>
   )
 }
