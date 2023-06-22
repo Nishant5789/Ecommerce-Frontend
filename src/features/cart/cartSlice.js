@@ -45,8 +45,6 @@ export const cartSlice = createSlice({
   name: 'products',
   initialState,
   reducers: {
-    // updateQueryUrl(state, action){
-    // },
   },
   extraReducers: (builder) => {
     builder
