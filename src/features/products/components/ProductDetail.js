@@ -39,8 +39,7 @@ const ProductDetail = () => {
 const renderProductDetails = (ProductDetails, selectedImage, setSelectedImage)=>{
   
   const {brand, category, description, discountPercentage, id, images, price, rating, stock, thumbnail, title} = ProductDetails;
-
-
+  
   const handleSelectedImage = (selectNumber)=>{
     console.log(selectNumber);
     if(selectNumber)

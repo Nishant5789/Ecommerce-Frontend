@@ -6,9 +6,15 @@ import {  useDispatch, useSelector } from "react-redux";
 import ProductFilter from "./ProductFilter";
 import ProductList from "./ProductList";
 import ProductPagination from "./ProductPagination";
-import { getTotalProductsPerPage } from "../../../app/constant";
+import { getTotalProductsPerPage, gettoastOptions } from "../../../app/constant";
 import ProductSelectMenu from "./ProductSelectMenu";
 import ProductMobileFilter from "./ProductMobileFilter";
+import {  toast } from "react-toastify";
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import { selectCartMsg } from "../../cart/cartSlice";
+
+
 
 const Products = () => {
   const [currentPage, setCurrentPage] = useState(1);
@@ -18,17 +24,28 @@ const Products = () => {
   const queryUrlObject = useSelector(selectQueryUrl);
   const categoryArray =  useSelector(selectCategory);
   const brandsArray =  useSelector(selectBrand);
+  const cartMsg = useSelector(selectCartMsg);
 
   // console.log(categoryArray);
   // console.log(brandsArray);
-
-  
+    
 
     useEffect(()=>{
       if(queryUrlObject.isupdated){
           dispatch(fetchProductsAsync(queryUrlObject));
       }
   },[queryUrlObject])
+
+  useEffect(()=>{
+    if(cartMsg){
+      if(cartMsg === "Product already exists"){
+        toast.error(cartMsg, gettoastOptions());
+      }else{
+        toast.success(cartMsg, gettoastOptions());
+      }
+    }
+  },[cartMsg])
+
 
   return (
     <> 
@@ -50,6 +67,7 @@ const Products = () => {
           </div>
         </div>
       </div>
+      <ToastContainer />
     </>
   );
 };
