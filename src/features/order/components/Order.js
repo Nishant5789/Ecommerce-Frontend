@@ -1,19 +1,15 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
-import { Link, useNavigate } from 'react-router-dom'
-import { fetchAllOrdersAsync, selectCurrOrderId, selectOrders } from '../orderSlice';
-import { logDOM } from '@testing-library/react';
+import { fetchAllOrdersAsync, selectOrders } from '../orderSlice';
 
-const Order = ({orderID}) => {
+const Order = () => {
   const dispatch = useDispatch();
   const orderArray = useSelector(selectOrders);
 
   useEffect(()=>{
     dispatch(fetchAllOrdersAsync());
   },[])
-
-
 
   return (
    <div className='bg-slate-200 py-4  min:h-screen flex justify-center'>
@@ -32,11 +28,12 @@ const Order = ({orderID}) => {
           order.items.map((item, index)=>{
             const {thumbnail, title, category , brand} = item;
             return (
-              <div className='flex gap-x-4 bg-slate-100 m-2 p-2'>
+              <div className='flex gap-x-4 bg-cyan-400 m-2 p-2'>
                 <div><img className='sm:h-32 h-24' src={thumbnail} alt="" /></div>
                 <ul>
                   <li className='font-bold text-xl'>{title}</li>
-                  <li>{brand}</li>
+                  <li>brand : {brand}</li>
+                  <li>category : {category}</li>
                   <li>Qty: <span className='font-bold'>{order.itemsQunatity[index]}</span></li>
                 </ul>
               </div>
@@ -47,19 +44,19 @@ const Order = ({orderID}) => {
     </ul>
     {/* subtotal  */}
     <ul className=''>
-      <li className='flex font-bold justify-between px-6'>
-        <span>subTotal</span>
+      <li className='flex font-bold justify-between px-8'>
+        <span>SubTotal</span>
         <span>$ {order.totalAmount}</span>
       </li>
-      <li className='flex font-bold  justify-between px-6'>
+      <li className='flex font-bold  justify-between px-8'>
         <span>Total Items in Cart</span>
         <span>{order.totalItems}</span>
       </li>
       <li className='px-6'>
-        <h1>shipping Address : </h1>
-       <ul className='border-2 bg-purple-500 text-white  border-black mt-4 p-4'>
+        <h1 className='text-2xl text-blue-700 font-bold'>Shipping Address : </h1>
+       <ul className='border-2 bg-purple-700 text-white  border-black mt-4 p-4'>
        <li className='flex flex-col font-bold sm:flex-row justify-between px-6'>
-        <span> {order.selectedAddress.name}</span>
+        <span>Name : {order.selectedAddress.name}</span>
         <span>Phone No : {order.selectedAddress.phoneNumber}</span>
       </li>
        <li className='flex flex-col font-bold sm:flex-row justify-between px-6'>

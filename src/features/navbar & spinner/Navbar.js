@@ -42,6 +42,18 @@ const Navbar = () => {
         <Link to='/logout'><li className="hover:bg-purple-500 active:bg-purple-400 px-3 w-full py-2 border-black">Logout</li></Link>
       </ul>
       </div>
+      <div className="flex items-center">
+              <Link to="/login">
+                <button className="bg-transparent text-white  p-2 rounded border border-gray-300 mr-4 hover:bg-gray-100 hover:text-gray-700">
+                  Log in
+                </button>
+              </Link>
+              <Link to="/register">
+                <button className="bg-blue-600 text-gray-200  p-2 rounded  hover:bg-blue-500 hover:text-gray-100">
+                  Register
+                </button>
+              </Link>
+      </div>
     </div>
   );
 };
