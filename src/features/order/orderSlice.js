@@ -4,28 +4,28 @@ import { createOrder, getAllOrderByUser, removeOrder, updateOrder } from './orde
 const initialState = {
     orders: [],
     status: 'idle',
-    currentOrder: null,
+    currentOrderId: null,
     totalOrders: 0
 };
 
 export const createOrderAsync = createAsyncThunk(
   'order/createOrder',
   async (orderObject) => {
-    const {data} = createOrder(orderObject);
+    const {data} = await createOrder(orderObject);
     return data;
   }
 );
 export const fetchAllOrdersAsync = createAsyncThunk(
   'order/fetchAllOrdersAsync',
   async (userId) => {
-    const {data} = getAllOrderByUser(userId);
+    const {data} = await getAllOrderByUser(userId);
     return data;
   }
 );
 export const updateOrdersAsync = createAsyncThunk(
-  'order/fetchAllOrdersAsync',
+  'order/updateOrdersAsync',
   async (updateOrderField, orderId) => {
-    const {data} = updateOrder(updateOrderField, orderId);
+    const {data} = await  updateOrder(updateOrderField, orderId);
     return data;
   }
 );
@@ -49,7 +49,7 @@ export const orderSlice = createSlice({
       })
       .addCase(createOrderAsync.fulfilled, (state, action) => {
         state.status = 'idle';
-        state.currentOrder = action.payload;
+        state.currentOrderId = action.payload.id;
         state.orders.push(action.payload);
       })
       .addCase(fetchAllOrdersAsync.pending, (state) => {
@@ -57,7 +57,7 @@ export const orderSlice = createSlice({
       })
       .addCase(fetchAllOrdersAsync.fulfilled, (state, action) => {
         state.status = 'idle';
-        state.currentOrder = null;
+        state.currentOrderId = null;
         state.orders = action.payload;
       })
       .addCase(updateOrdersAsync.pending, (state) => {
@@ -65,7 +65,7 @@ export const orderSlice = createSlice({
       })
       .addCase(updateOrdersAsync.fulfilled, (state, action) => {
         state.status = 'idle';
-        state.currentOrder = null;
+        state.currentOrderId = null;
         const index = state.orders.findIndex((order)=>order.id===action.payload.id);
         state.orders.splice(index, 1, action.payload);
       })
@@ -74,7 +74,7 @@ export const orderSlice = createSlice({
       })
       .addCase(removeOrdersAsync.fulfilled, (state, action) => {
         state.status = 'idle';
-        state.currentOrder = null;
+        state.currentOrderId = null;
         const index = state.orders.findIndex((order)=>order.id===action.payload.id);
         state.orders.splice(index, 1);
       })
@@ -84,6 +84,6 @@ export const orderSlice = createSlice({
 // export const {  } = cartSlice.actions;
 
 export const selectOrders = (state)=>state.order.orders;
-export const selectCurrOrder = (state)=>state.order.currentOrder;
+export const selectCurrOrderId = (state)=>state.order.currentOrderId;
 
 export default orderSlice.reducer;
