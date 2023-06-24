@@ -6,13 +6,11 @@ import Cart from "./features/cart/Cart";
 import Products from "./features/products/components/Products";
 import Checkout from "./features/checkout/Checkout";
 import ProductDetail from "./features/products/components/ProductDetail";
-
-
+import Order from "./features/order/components/Order";
 
 function App() { 
   return (
-    <>
-        <BrowserRouter>
+      <BrowserRouter>
         <Routes>
           <Route path="/" element={<Products/>}/>
           <Route path="/product/:productId" element={<ProductDetail/>}/>
@@ -20,9 +18,9 @@ function App() {
           <Route path="/register" element={<Register/>}/>
           <Route path="/cart" element={<Cart/>}/>
           <Route path="/checkout" element={<Checkout/>}/>
+          <Route path="/order" element={<Order/>}/>
         </Routes>   
-        </BrowserRouter>
-    </>
+      </BrowserRouter>
   );
 }
 
