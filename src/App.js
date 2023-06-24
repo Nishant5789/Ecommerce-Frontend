@@ -7,6 +7,7 @@ import Products from "./features/products/components/Products";
 import Checkout from "./features/checkout/Checkout";
 import ProductDetail from "./features/products/components/ProductDetail";
 import Order from "./features/order/components/Order";
+import ConfirmationOrder from "./features/order/components/ConfirmationOrder";
 
 function App() { 
   return (
@@ -19,6 +20,7 @@ function App() {
           <Route path="/cart" element={<Cart/>}/>
           <Route path="/checkout" element={<Checkout/>}/>
           <Route path="/order" element={<Order/>}/>
+          <Route path="/order/:confirmationId" element={<ConfirmationOrder/>}/>
         </Routes>   
       </BrowserRouter>
   );

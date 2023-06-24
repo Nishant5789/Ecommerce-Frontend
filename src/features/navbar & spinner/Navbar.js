@@ -1,86 +1,48 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
 
 const Navbar = () => {
+
+  const [openMenu, setOpenMenu] = useState(true);
   return (
-    <>
-      <nav
-        id="header"
-        className="w-full z-30 top-10 py-1 bg-purple-700 shadow-lg border-b border-blue-400 ">
-        <div className="w-full flex items-center justify-between mt-0 px-6 py-2">
-          <label
-            htmlFor="menu-toggle"
-            className="cursor-pointer md:hidden block">
-            <svg
-              className="fill-current text-blue-600"
-              xmlns="http://www.w3.org/2000/svg"
-              width={20}
-              height={20}
-              viewBox="0 0 20 20">
-              <title>menu</title>
-              <path d="M0 3h20v2H0V3zm0 6h20v2H0V9zm0 6h20v2H0v-2z" />
-            </svg>
-          </label>
-          <input
-            className="hidden"
-            type="checkbox"
-            id="menu-toggle"
-          />
-          <div
-            className="hidden md:flex md:items-center md:w-auto w-full order-3 md:order-1"
-            id="menu">
-            <nav>
-              <ul className="md:flex items-center justify-between text-base text-white  pt-4 md:pt-0">
-                <li>
-                  <Link
-                    className="inline-block no-underline hover:text-black font-medium text-lg py-2 px-4 lg:-ml-2"
-                    to="/">
-                    Home
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    className="inline-block no-underline hover:text-black font-medium text-lg py-2 px-4 lg:-ml-2"
-                    to="/">
-                    Products
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    className="inline-block no-underline hover:text-black font-medium text-lg py-2 px-4 lg:-ml-2"
-                    to="/cart">
-                    Cart
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    className="inline-block no-underline hover:text-black font-medium text-lg py-2 px-4 lg:-ml-2"
-                    to="#">
-                    About
-                  </Link>
-                </li>
-              </ul>
-            </nav>
-          </div>
-          <div
-            className="order-2 md:order-3 flex flex-wrap items-center justify-end mr-0 md:mr-4"
-            id="nav-content">
-            <div className="auth flex items-center w-full md:w-full">
-              <Link to="/login">
-                <button className="bg-transparent text-white  p-2 rounded border border-gray-300 mr-4 hover:bg-gray-100 hover:text-gray-700">
-                  Log in
-                </button>
-              </Link>
-              <Link to="/register">
-                <button className="bg-blue-600 text-gray-200  p-2 rounded  hover:bg-blue-500 hover:text-gray-100">
-                  Register
-                </button>
-              </Link>
-            </div>
-          </div>
+    <div className="bg-purple-600  flex justify-between md:px-14 sm:px-10 px-6 py-4">
+      <div className="flex gap-x-4">
+        <div className="flex items-center">
+          <img src={"https://global-uploads.webflow.com/5e157547d6f791d34ea4e2bf/6087f2b060c7a92408bac811_logo.svg"} alt="" />
         </div>
-      </nav>
-    </>
+        <ul className="flex items-center sm:gap-x-4 gap-x-2">
+        <li>
+            <Link
+              className="hover:text-yellow-500 text-white font-medium text-xl"
+              to="/">
+              Home
+            </Link>
+        </li>
+        <li>
+          <Link
+            className="hover:text-yellow-500 text-white font-medium text-xl"
+            to="/cart">
+            Cart
+          </Link>
+        </li>
+        <li>
+          <Link
+            className="hover:text-yellow-500 text-white font-medium text-xl"
+            to="#">
+            About
+          </Link>
+        </li>
+        </ul> 
+      </div>
+      <div className="relative">
+      <img onClick={()=>setOpenMenu(!openMenu)} src="https://english.cdn.zeenews.com/sites/default/files/2022/01/30/1010077-gehraaiyan.png" className="w-14 h-14  rounded-full"  alt="" />
+      <ul className={`${openMenu && "hidden"} absolute flex-col  shadow-lg sm:text-xl shadow-black bg-white rounded-b-lg rounded-l-lg  right-6 top-19`}>
+        <Link to='/profile'><li className="hover:bg-purple-500 active:bg-purple-400 border-b-2 px-3 py-2 w-full border-black">Profile</li></Link>
+        <Link to='/order'><li className="hover:bg-purple-500 active:bg-purple-400 border-b-2 px-3 py-2 w-max border-black">Your Order</li></Link>
+        <Link to='/logout'><li className="hover:bg-purple-500 active:bg-purple-400 px-3 w-full py-2 border-black">Logout</li></Link>
+      </ul>
+      </div>
+    </div>
   );
 };
 

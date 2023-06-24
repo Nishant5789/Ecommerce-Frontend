@@ -2,13 +2,14 @@
 import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { addUserAddressAsync, fetchUserAddressAsync, selectUserAddresses } from "../user/userSlice";
 import { fetchCartItemsAsync, selectCartItems } from "../cart/cartSlice";
 import {  toast } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
 import { ToastContainer } from "react-toastify";
-import { gettoastOptions } from "../../app/constant";
+import { getUserId, gettoastOptions } from "../../app/constant";
+import { createOrderAsync, selectCurrOrderId } from "../order/orderSlice";
 
 const Checkout = () => {
   const {register,handleSubmit,watch,reset,formState: { errors }} = useForm();
@@ -16,18 +17,38 @@ const Checkout = () => {
   const [selectdAddress, setSelectdAddress] = useState(null);
   const [selectedPaymentMode, setSelectedPaymentMode] = useState(null);
   const dispatch = useDispatch();
+  const navigate = useNavigate();
+
   const addressArray = useSelector(selectUserAddresses);
   const cartItemArray = useSelector(selectCartItems);
+  const confirmationId = useSelector(selectCurrOrderId);
+  console.log("confirmationId",confirmationId);
 
   const onSubmit = (data) => {
     // console.log(data);
     // reset();
     dispatch(addUserAddressAsync(data));     
   };
-
+  // {
+  //   "items": ["648dbb70d2ebd1b1455464b3"],
+  //   "itemsQunatity": [1],
+  //   "totalAmount": 700,
+  //   "totalItems": 1,
+  //   "user": "648d6af31a181df43848f424",
+  //   "paymentMode": "CASH",
+  //   "selectedAddress": "64956049fba1a19f14db425a"
+  // }
   const handleOrder = ()=>{
     if(selectedPaymentMode && selectdAddress){
       // console.log("Order selected");
+      const itemsIdArray = cartItemArray.map((item)=>item.product.id);
+      const itemsQuantityArray = cartItemArray.map((item)=>item.quantity);
+      const totalItems = cartItemArray.reduce((accumulator, item) => accumulator + item.quantity, 0 );
+
+      const orderObject = {items:itemsIdArray,itemsQunatity:itemsQuantityArray,totalAmount: subTotal,
+        totalItems:totalItems,user:getUserId(),paymentMode:selectedPaymentMode,selectedAddress:addressArray[selectdAddress-1].id}
+        console.log(orderObject);
+      dispatch(createOrderAsync(orderObject));
     }else{
       selectdAddress===null && selectedPaymentMode===null && toast.error("Address and PaymentMode not selected", gettoastOptions());
       selectdAddress===null && selectedPaymentMode!==null && toast.error("Address  not selected", gettoastOptions());
@@ -47,6 +68,10 @@ const Checkout = () => {
     dispatch(fetchUserAddressAsync());
     dispatch(fetchCartItemsAsync());
   },[])
+
+  useEffect(()=>{
+    confirmationId && navigate(`/order/${confirmationId}`);
+  },[confirmationId])
 
   return (
     <>
@@ -272,7 +297,7 @@ const Checkout = () => {
           <div className="px-8 border-b">
             <div className="flex justify-between py-4 text-gray-600">
               <span>Subtotal</span>
-              <span className="font-semibold text-pink-500">$ {subTotal}</span>
+              <span className="font-semibold text-pink-500">${subTotal}</span>
             </div>
             <div className="flex justify-between py-4 text-gray-600">
               <span>Shipping</span>
