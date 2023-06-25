@@ -13,5 +13,8 @@ export function updateItem(updatecartItem, cartItemId) {
 export function removeItem(cartItemId) {
     return axios.delete(`http://localhost:8080/cart/${cartItemId}`);
 }
+export function removeAllItem() {
+    return axios.delete(`http://localhost:8080/cart/`);
+}
 
 

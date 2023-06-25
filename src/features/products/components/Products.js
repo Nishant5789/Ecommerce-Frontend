@@ -61,7 +61,7 @@ const Products = () => {
               <ProductMobileFilter ItemName={"brand"} /> 
               <ProductSelectMenu />
           </div>
-          <div className="grid sm:grid-cols-2 grid-cols-1 lg:grid-cols-3 m-4 gap-4">
+          <div className="grid  sm:grid-cols-2 grid-cols-1 lg:grid-cols-3 m-4 gap-4">
           <ProductList />
           <ProductPagination currentPage={currentPage} setCurrentPage={setCurrentPage}/>
           </div>

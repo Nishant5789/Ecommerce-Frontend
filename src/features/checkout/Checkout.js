@@ -4,7 +4,7 @@ import { useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import { addUserAddressAsync, fetchUserAddressAsync, selectUserAddresses } from "../user/userSlice";
-import { fetchCartItemsAsync, selectCartItems } from "../cart/cartSlice";
+import { fetchCartItemsAsync, removeAllItemFromCart, removeAllItemFromCartAsync, selectCartItems } from "../cart/cartSlice";
 import {  toast } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
 import { ToastContainer } from "react-toastify";
@@ -70,7 +70,10 @@ const Checkout = () => {
   },[])
 
   useEffect(()=>{
-    confirmationId && navigate(`/order/${confirmationId}`);
+    if(confirmationId){
+      dispatch(removeAllItemFromCartAsync());
+      navigate(`/order/${confirmationId}`);
+    }  
   },[confirmationId])
 
   return (
