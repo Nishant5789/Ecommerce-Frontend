@@ -42,7 +42,7 @@ const Navbar = () => {
         <Link to='/logout'><li className="hover:bg-purple-500 active:bg-purple-400 px-3 w-full py-2 border-black">Logout</li></Link>
       </ul>
       </div>
-      <div className="flex items-center">
+      <div className="hidden  items-center">
               <Link to="/login">
                 <button className="bg-transparent text-white  p-2 rounded border border-gray-300 mr-4 hover:bg-gray-100 hover:text-gray-700">
                   Log in

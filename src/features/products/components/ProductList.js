@@ -20,11 +20,14 @@ const ProductList = ({currentPage}) => {
 
   return (
     <>
+       {/* <div className='h-screen'> */}
     {
         ProductArray && ProductArray.map((ProductDetails, index)=>{
           return (<Productcard ProductDetails={ProductDetails} />)
         })
     }
+
+    {/* </div> */}
     </>
   )
 }

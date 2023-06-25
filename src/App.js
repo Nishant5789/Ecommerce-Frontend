@@ -8,12 +8,14 @@ import Checkout from "./features/checkout/Checkout";
 import ProductDetail from "./features/products/components/ProductDetail";
 import Order from "./features/order/components/Order";
 import ConfirmationOrder from "./features/order/components/ConfirmationOrder";
+import Admin from "./features/admin/admin";
 
 function App() { 
   return (
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Products/>}/>
+          <Route path="/admin/*" element={<Admin/>}/>
           <Route path="/product/:productId" element={<ProductDetail/>}/>
           <Route path="/login" element={<Login/>}/>
           <Route path="/register" element={<Register/>}/>

@@ -1,6 +1,6 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { getTotalProductsPerPage } from '../../app/constant';
-import { addItem, getCartItmes, removeItem, updateItem } from './cartApi';
+import { addItem, getCartItmes, removeAllItem, removeItem, updateItem } from './cartApi';
 
 const initialState = {
   items: [], 
@@ -40,11 +40,21 @@ export const removeCartItemsAsync = createAsyncThunk(
     return cartItemId;
   }
 );
+export const removeAllItemFromCartAsync = createAsyncThunk(
+  'cart/removeAllItemFromCartAsync',
+  async () => {
+    await removeAllItem();
+    return {};
+  }
+);
 
 export const cartSlice = createSlice({
   name: 'products',
   initialState,
   reducers: {
+    // removeAllItemFromCart(state) {
+    //     state.items = [];
+    // }
   },
   extraReducers: (builder) => {
     builder
@@ -85,10 +95,17 @@ export const cartSlice = createSlice({
         const index = state.items.findIndex((item)=>item.id===action.payload);
         state.items.splice(index, 1);
       })
+      .addCase(removeAllItemFromCartAsync.pending, (state) => {
+        state.status = 'loading';
+      })
+      .addCase(removeAllItemFromCartAsync.fulfilled, (state, action) => {
+        state.status = 'idle';
+        state.items = [];
+      })
   },
 });
 
-// export const {  } = cartSlice.actions;
+// export const { removeAllItemFromCart } = cartSlice.actions;
 
 export const selectCartItems = (state)=>state.cart.items;
 export const selectCartMsg = (state)=>state.cart.msg;
