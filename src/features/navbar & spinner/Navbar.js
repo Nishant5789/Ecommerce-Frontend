@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import { Link } from "react-router-dom";
 
 const Navbar = () => {
-
   const [openMenu, setOpenMenu] = useState(true);
   return (
     <div className="bg-purple-600  flex justify-between md:px-14 sm:px-10 px-6 py-4">
@@ -35,11 +34,11 @@ const Navbar = () => {
         </ul> 
       </div>
       <div className="relative">
-      <img onClick={()=>setOpenMenu(!openMenu)} src="https://english.cdn.zeenews.com/sites/default/files/2022/01/30/1010077-gehraaiyan.png" className="w-14 h-14  rounded-full"  alt="" />
+      <img onClick={()=>setOpenMenu(!openMenu)} src="https://cdn.pixabay.com/photo/2017/11/10/05/48/user-2935527_1280.png" className="w-14 h-14  rounded-full"  alt="" />
       <ul className={`${openMenu && "hidden"} absolute flex-col  shadow-lg sm:text-xl shadow-black bg-white rounded-b-lg rounded-l-lg  right-6 top-19`}>
-        <Link to='/profile'><li className="hover:bg-purple-500 active:bg-purple-400 border-b-2 px-3 py-2 w-full border-black">Profile</li></Link>
+        <Link to='/profile'><li className="hover:bg-purple-500 active:bg-purple-400 border-b-2 px-3 py-2 w-full border-black">My Profile</li></Link>
         <Link to='/order'><li className="hover:bg-purple-500 active:bg-purple-400 border-b-2 px-3 py-2 w-max border-black">Your Order</li></Link>
-        <Link to='/logout'><li className="hover:bg-purple-500 active:bg-purple-400 px-3 w-full py-2 border-black">Logout</li></Link>
+        <Link to='/login'><li className="hover:bg-purple-500 active:bg-purple-400 px-3 w-full py-2 border-black">Logout</li></Link>
       </ul>
       </div>
       <div className="hidden  items-center">

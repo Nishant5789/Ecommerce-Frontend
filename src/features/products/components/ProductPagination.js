@@ -31,7 +31,7 @@ const ProductPagination = ({currentPage, setCurrentPage}) => {
       {
         paginationArray.map((PageNO, index)=>{
           return (                   
-          <li onClick={()=>handlePagination(PageNO, totalProductsPerPage)} className="bg-white border border-gray-300 text-gray-500 hover:bg-gray-100 hover:text-gray-700 leading-tight py-3 px-5 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
+          <li onClick={()=>handlePagination(PageNO, totalProductsPerPage)} key={index} className="bg-white border border-gray-300 text-gray-500 hover:bg-gray-100 hover:text-gray-700 leading-tight py-3 px-5 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
               {PageNO}
           </li>)
         })

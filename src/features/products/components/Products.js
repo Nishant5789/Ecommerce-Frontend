@@ -22,8 +22,8 @@ const Products = () => {
   const totalProductPerPage = getTotalProductsPerPage();
 
   const queryUrlObject = useSelector(selectQueryUrl);
-  const categoryArray =  useSelector(selectCategory);
-  const brandsArray =  useSelector(selectBrand);
+  // const categoryArray =  useSelector(selectCategory);
+  // const brandsArray =  useSelector(selectBrand);
   const cartMsg = useSelector(selectCartMsg);
 
   // console.log(categoryArray);

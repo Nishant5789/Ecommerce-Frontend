@@ -18,7 +18,7 @@ const ProductSelectMenu = () => {
         {
           name: "Price: High to Low", sort: "price", order: "desc", current: false,
         }
-    ];
+    ]; 
 
     const handleSortByProducts = (e) => {
         if(e.target.value !== "Sort By")

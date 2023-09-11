@@ -2,13 +2,16 @@
 import React, { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchAllOrdersAsync, selectOrders } from '../orderSlice';
+import { selectLoggedInUser } from '../../auth/authSlice';
 
 const Order = () => {
   const dispatch = useDispatch();
+  const loggedUser = useSelector(selectLoggedInUser);
   const orderArray = useSelector(selectOrders);
 
+
   useEffect(()=>{
-    dispatch(fetchAllOrdersAsync());
+    dispatch(fetchAllOrdersAsync(loggedUser.id));
   },[])
 
   return (
@@ -34,7 +37,7 @@ const Order = () => {
                   <li className='font-bold text-xl'>{title}</li>
                   <li>brand : {brand}</li>
                   <li>category : {category}</li>
-                  <li>Qty: <span className='font-bold'>{order.itemsQunatity[index]}</span></li>
+                  {/* <li>Qty: <span className='font-bold'>{order.itemsQunatity[index]}</span></li> */}
                 </ul>
               </div>
             )

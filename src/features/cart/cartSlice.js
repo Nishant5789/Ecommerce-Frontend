@@ -42,8 +42,8 @@ export const removeCartItemsAsync = createAsyncThunk(
 );
 export const removeAllItemFromCartAsync = createAsyncThunk(
   'cart/removeAllItemFromCartAsync',
-  async () => {
-    await removeAllItem();
+  async (userId) => {
+    await removeAllItem(userId);
     return {};
   }
 );

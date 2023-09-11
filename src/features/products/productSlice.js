@@ -17,7 +17,7 @@ const initialState = {
   brands: [], 
   category: [], 
   singleProductDetail: {},
-  queryUrlObject: queryObject,
+  queryUrlObject: queryObject, 
   totalFetchProducts: 0, 
   status: 'idle',
 };

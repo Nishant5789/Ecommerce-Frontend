@@ -1,8 +1,8 @@
 import axios from "axios";
 import { getUserId } from "../../app/constant";
 
-export function getCartItmes() {
-    return axios.get(`http://localhost:8080/cart/${getUserId()}`)
+export function getCartItmes(userId) {
+    return axios.get(`http://localhost:8080/cart/${userId}`)
 }
 export function addItem(cartItem) {
     return axios.post(`http://localhost:8080/cart/`, cartItem);
@@ -13,8 +13,8 @@ export function updateItem(updatecartItem, cartItemId) {
 export function removeItem(cartItemId) {
     return axios.delete(`http://localhost:8080/cart/${cartItemId}`);
 }
-export function removeAllItem() {
-    return axios.delete(`http://localhost:8080/cart/`);
+export function removeAllItem(userId) {
+    return axios.delete(`http://localhost:8080/cart/removeAllitems/${userId}`);
 }
 
 

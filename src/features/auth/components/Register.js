@@ -1,16 +1,77 @@
-import React from 'react'
-import { Link } from 'react-router-dom'
+import React, { useState } from 'react'
+import { Link , Navigate} from 'react-router-dom'
+import "react-toastify/dist/ReactToastify.css";
+import { toast } from "react-toastify";
+import { ToastContainer } from "react-toastify";
+import { gettoastOptions } from '../../../app/constant';
+import { useDispatch, useSelector } from 'react-redux';
+import { createUserAsync, selectLoggedInUser } from '../authSlice';
 
 const Register = () => {
+  const dispatch = useDispatch();
+  const user = useSelector(selectLoggedInUser);
+  const registerObject = {
+    email: "",
+    password: "",
+    confirm_password: "",
+  }
+
+  const [registerData, setRegisterData] = useState(registerObject);
+
+  const handlechange = (event) => {
+    setRegisterData({ ...registerData, [event.target.name]: event.target.value });
+  }
+
+  const handleValidation = ({
+    Email,
+    Password,
+    ConfirmPassword,
+  }) => {
+    const emailRegex = /^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$/;
+    if(Email=="") {
+      toast.error("All field is require", gettoastOptions());
+      return false;
+    }
+    else if(Password=="") {
+      toast.error("All field is require", gettoastOptions());
+      return false;
+    }
+    else if(ConfirmPassword=="") {
+      toast.error("All field is require", gettoastOptions());
+      return false;
+    }
+    else if (Password !== ConfirmPassword) {
+      toast.error("Password didn't match", gettoastOptions());
+      return false;
+    } else if (Password.length <= 4) {
+      toast.error("Password Length should be greater than 4", gettoastOptions());
+      return false;
+    } else if (!emailRegex.test(Email)) {
+      toast.error("Email format should be right", gettoastOptions());
+      return false;
+    }
+    return true;
+  };
+
+  const handdleRegister = (e) => {
+    e.preventDefault();
+    console.log("submit");
+    const { email: Email, password: Password, confirm_password: ConfirmPassword } = registerData;
+    if (handleValidation({ Email, Password, ConfirmPassword })) {
+      console.log("validated");
+      dispatch(createUserAsync({ email: registerData.email, password: registerData.password}));
+    }
+  };
   return (
     <>
-        <div className="min-h-screen flex flex-col items-center justify-center bg-gray-300">
+    {user && <Navigate to="/" replace={true} />}
+      <div className="min-h-screen flex flex-col items-center justify-center bg-gray-300">
         <div className="flex flex-col bg-white shadow-md px-4 sm:px-6 md:px-8 lg:px-10 py-8 rounded-md w-full max-w-md">
           <div className="font-medium self-center text-xl sm:text-2xl uppercase text-gray-800">
             Register To Your Account
           </div>
           <div className="mt-10">
-            <form action="#">
+            <form onSubmit={handdleRegister}>
               <div className="flex flex-col mb-6">
                 <label
                   htmlFor="email"
@@ -34,6 +95,9 @@ const Register = () => {
                     id="email"
                     type="email"
                     name="email"
+                    required="true"
+                    value={registerData.email}
+                    onChange={handlechange}
                     className="text-sm sm:text-base placeholder-gray-500 pl-10 pr-4 rounded-lg border border-gray-400 w-full py-2 focus:outline-none focus:border-blue-400"
                     placeholder="E-Mail Address"
                   />
@@ -64,6 +128,8 @@ const Register = () => {
                     id="password"
                     type="password"
                     name="password"
+                    value={registerData.password}
+                    onChange={handlechange}
                     className="text-sm sm:text-base placeholder-gray-500 pl-10 pr-4 rounded-lg border border-gray-400 w-full py-2 focus:outline-none focus:border-blue-400"
                     placeholder="Password"
                   />
@@ -93,7 +159,9 @@ const Register = () => {
                   <input
                     id="confirm_password"
                     type="password"
-                    name="confirm-password"
+                    name="confirm_password"
+                    value={registerData.confirm_password}
+                    onChange={handlechange}
                     className="text-sm sm:text-base placeholder-gray-500 pl-10 pr-4 rounded-lg border border-gray-400 w-full py-2 focus:outline-none focus:border-blue-400"
                     placeholder="confirm password"
                   />
@@ -150,6 +218,7 @@ const Register = () => {
           </div>
         </div>
       </div>
+      <ToastContainer />
     </>
   )
 }

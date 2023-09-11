@@ -5,14 +5,15 @@ import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import { addUserAddressAsync, fetchUserAddressAsync, selectUserAddresses } from "../user/userSlice";
 import { fetchCartItemsAsync, removeAllItemFromCart, removeAllItemFromCartAsync, selectCartItems } from "../cart/cartSlice";
-import {  toast } from "react-toastify";
+import { toast } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
 import { ToastContainer } from "react-toastify";
 import { getUserId, gettoastOptions } from "../../app/constant";
 import { createOrderAsync, selectCurrOrderId } from "../order/orderSlice";
+import { selectLoggedInUser } from "../auth/authSlice";
 
 const Checkout = () => {
-  const {register,handleSubmit,watch,reset,formState: { errors }} = useForm();
+  const { register, handleSubmit, watch, reset, formState: { errors } } = useForm();
   const [subTotal, setSubtotal] = useState(0);
   const [selectdAddress, setSelectdAddress] = useState(null);
   const [selectedPaymentMode, setSelectedPaymentMode] = useState(null);
@@ -22,12 +23,14 @@ const Checkout = () => {
   const addressArray = useSelector(selectUserAddresses);
   const cartItemArray = useSelector(selectCartItems);
   const confirmationId = useSelector(selectCurrOrderId);
-  console.log("confirmationId",confirmationId);
+  const loggedUser = useSelector(selectLoggedInUser);
+
+  console.log("confirmationId", confirmationId);
 
   const onSubmit = (data) => {
     // console.log(data);
     // reset();
-    dispatch(addUserAddressAsync(data));     
+    dispatch(addUserAddressAsync({addressObject:data, userId:loggedUser.id}));
   };
   // {
   //   "items": ["648dbb70d2ebd1b1455464b3"],
@@ -38,43 +41,45 @@ const Checkout = () => {
   //   "paymentMode": "CASH",
   //   "selectedAddress": "64956049fba1a19f14db425a"
   // }
-  const handleOrder = ()=>{
-    if(selectedPaymentMode && selectdAddress){
+  const handleOrder = () => {
+    if (selectedPaymentMode && selectdAddress) {
       // console.log("Order selected");
-      const itemsIdArray = cartItemArray.map((item)=>item.product.id);
-      const itemsQuantityArray = cartItemArray.map((item)=>item.quantity);
-      const totalItems = cartItemArray.reduce((accumulator, item) => accumulator + item.quantity, 0 );
+      const itemsIdArray = cartItemArray.map((item) => item.product.id);
+      const itemsQuantityArray = cartItemArray.map((item) => item.quantity);
+      const totalItems = cartItemArray.reduce((accumulator, item) => accumulator + item.quantity, 0);
 
-      const orderObject = {items:itemsIdArray,itemsQunatity:itemsQuantityArray,totalAmount: subTotal,
-        totalItems:totalItems,user:getUserId(),paymentMode:selectedPaymentMode,selectedAddress:addressArray[selectdAddress-1].id}
-        console.log(orderObject);
+      const orderObject = {
+        items: itemsIdArray, itemsQunatity: itemsQuantityArray, totalAmount: subTotal,
+        totalItems: totalItems, user: loggedUser.id, paymentMode: selectedPaymentMode, selectedAddress: addressArray[selectdAddress - 1].id
+      }
+      console.log(orderObject);
       dispatch(createOrderAsync(orderObject));
-    }else{
-      selectdAddress===null && selectedPaymentMode===null && toast.error("Address and PaymentMode not selected", gettoastOptions());
-      selectdAddress===null && selectedPaymentMode!==null && toast.error("Address  not selected", gettoastOptions());
-      selectdAddress!==null && selectedPaymentMode===null && toast.error("PaymentMode not selected", gettoastOptions());
+    } else {
+      selectdAddress === null && selectedPaymentMode === null && toast.error("Address and PaymentMode not selected", gettoastOptions());
+      selectdAddress === null && selectedPaymentMode !== null && toast.error("Address  not selected", gettoastOptions());
+      selectdAddress !== null && selectedPaymentMode === null && toast.error("PaymentMode not selected", gettoastOptions());
     }
   }
 
   useEffect(() => {
     if (cartItemArray.length > 0) {
       const finalSubTotal = cartItemArray.reduce(
-        (accumulator, item) => accumulator + item.product.price * item.quantity, 0 );
+        (accumulator, item) => accumulator + item.product.price * item.quantity, 0);
       setSubtotal(finalSubTotal);
     }
   }, [cartItemArray]);
 
-  useEffect(()=>{
-    dispatch(fetchUserAddressAsync());
-    dispatch(fetchCartItemsAsync());
-  },[])
+  useEffect(() => {
+    dispatch(fetchUserAddressAsync(loggedUser.id));
+    dispatch(fetchCartItemsAsync(loggedUser.id));
+  }, [])
 
-  useEffect(()=>{
-    if(confirmationId){
-      dispatch(removeAllItemFromCartAsync());
+  useEffect(() => {
+    if (confirmationId) {
+      dispatch(removeAllItemFromCartAsync(loggedUser.id));
       navigate(`/order/${confirmationId}`);
-    }  
-  },[confirmationId])
+    }
+  }, [confirmationId])
 
   return (
     <>
@@ -84,140 +89,140 @@ const Checkout = () => {
             <form
               onSubmit={handleSubmit(onSubmit)}
               className="rounded-2xl font-bold">
-              
-                <h2 className="uppercase tracking-wide text-lg font-semibold text-gray-700 my-2">
-                  Shipping &amp; Billing Information
-                </h2>
-                <div className="mb-3 bg-white shadow-lg rounded text-gray-600">
-                  <div className="flex border-b border-gray-200 h-12 py-3 items-center">
-                    <span className="px-2">Name:</span>
-                    <input
-                      className="focus:outline-none my-2 focus:border-2 rounded-lg w-3/4 lg:w-4/5 pl-2 py-2 border-purple-600"
-                      placeholder="Enter Your Name"
-                      {...register("name", { required: true })}
-                    />
-                  </div>
-                  {errors.name && (
-                    <span className="text-red-500 ml-4">Name is required</span>
-                  )}
 
-                  <div className="flex border-b border-gray-200 h-12 py-3 items-center">
-                    <span className="px-2">Email:</span>
-                    <input
-                      type="email"
-                      novalidate="novalidate"
-                      className="focus:outline-none my-2 focus:border-2 rounded-lg w-3/4 lg:w-4/5 pl-2 py-2 border-purple-600"
-                      placeholder="Enter Your Email Address"
-                      {...register("email", { required: true })}
-                    />
-                  </div>
-                  {errors.email && (
-                    <span className="text-red-500 ml-4">Email is required</span>
-                  )}
+              <h2 className="uppercase tracking-wide text-lg font-semibold text-gray-700 my-2">
+                Shipping &amp; Billing Information
+              </h2>
+              <div className="mb-3 bg-white shadow-lg rounded text-gray-600">
+                <div className="flex border-b border-gray-200 h-12 py-3 items-center">
+                  <span className="px-2">Name:</span>
+                  <input
+                    className="focus:outline-none my-2 focus:border-2 rounded-lg w-3/4 lg:w-4/5 pl-2 py-2 border-purple-600"
+                    placeholder="Enter Your Name"
+                    {...register("name", { required: true })}
+                  />
+                </div>
+                {errors.name && (
+                  <span className="text-red-500 ml-4">Name is required</span>
+                )}
 
-                  <div className="flex border-b border-gray-200 h-12 py-3 items-center">
-                    <span className="px-2" >Phone Number:</span>
-                    <input
-                      type="tel"
-                      className="focus:outline-none focus:border-2 rounded-lg w-3/4 lg:w-4/5 pl-2 py-2 border-purple-600"
-                      placeholder="Enter Your Phone Number"
-                      {...register("phoneNumber", { required: true })}
-                    />
-                  </div>
-                  {errors.phoneNumber && (
-                    <span className="text-red-500 ml-4">
-                      Phone Number is required
-                    </span>
-                  )}
+                <div className="flex border-b border-gray-200 h-12 py-3 items-center">
+                  <span className="px-2">Email:</span>
+                  <input
+                    type="email"
+                    novalidate="novalidate"
+                    className="focus:outline-none my-2 focus:border-2 rounded-lg w-3/4 lg:w-4/5 pl-2 py-2 border-purple-600"
+                    placeholder="Enter Your Email Address"
+                    {...register("email", { required: true })}
+                  />
+                </div>
+                {errors.email && (
+                  <span className="text-red-500 ml-4">Email is required</span>
+                )}
 
-                  <div className="flex border-b border-gray-200 h-12 py-3 items-center">
-                    <span className="px-2">Address:</span>
-                    <input
-                      className="focus:outline-none my-2 focus:border-2 rounded-lg w-3/4 lg:w-4/5 pl-2 py-2 border-purple-600"
-                      placeholder="Enter Your Street Address"
-                      {...register("streetAddress", { required: true })}
-                    />
-                  </div>
-                  {errors.streetAddress && (
-                    <span className="text-red-500 ml-4">Address is required</span>
-                  )}
+                <div className="flex border-b border-gray-200 h-12 py-3 items-center">
+                  <span className="px-2" >Phone Number:</span>
+                  <input
+                    type="tel"
+                    className="focus:outline-none focus:border-2 rounded-lg w-3/4 lg:w-4/5 pl-2 py-2 border-purple-600"
+                    placeholder="Enter Your Phone Number"
+                    {...register("phoneNumber", { required: true })}
+                  />
+                </div>
+                {errors.phoneNumber && (
+                  <span className="text-red-500 ml-4">
+                    Phone Number is required
+                  </span>
+                )}
 
-                  <div className="flex border-b border-gray-200 h-12 py-3 items-center">
-                    <span className="px-2">City:</span>
-                    <input
-                      className="focus:outline-none my-2 focus:border-2 rounded-lg w-3/4 lg:w-4/5 pl-2 py-2 border-purple-600"
-                      placeholder="City"
-                      {...register("city", { required: true })}
-                    />
-                  </div>
-                  {errors.city && (
-                    <span className="text-red-500 ml-4">City is required</span>
-                  )}
+                <div className="flex border-b border-gray-200 h-12 py-3 items-center">
+                  <span className="px-2">Address:</span>
+                  <input
+                    className="focus:outline-none my-2 focus:border-2 rounded-lg w-3/4 lg:w-4/5 pl-2 py-2 border-purple-600"
+                    placeholder="Enter Your Street Address"
+                    {...register("streetAddress", { required: true })}
+                  />
+                </div>
+                {errors.streetAddress && (
+                  <span className="text-red-500 ml-4">Address is required</span>
+                )}
 
-                  <div className="flex border-b border-gray-200 h-12 py-3 items-center">
-                    <span className="px-2">State:</span>
-                    <input
-                      className="focus:outline-none focus:border-2 rounded-lg w-3/4 lg:w-4/5 pl-2 py-2 border-purple-600"
-                      placeholder="State"
-                      {...register("state", { required: true })}
-                    />
-                  </div>
-                  {errors.state && <span className="text-red-500 ml-4">State is required</span>}
-                  <div className="flex border-b border-gray-200 h-12 py-3 items-center">
-                    <span className="px-2">Pincode:</span>
-                    <input
-                      className="focus:outline-none focus:border-2 rounded-lg w-3/4 lg:w-4/5 pl-2 py-2 border-purple-600"
-                      placeholder="pin Code"
-                      {...register("pinCode", { required: true })}
-                    />
-                  </div>
-                  {errors.pinCode && <span className="text-red-500 ml-4">Pincode is required</span>}
-                  <div className='flex justify-end gap-x-2'>
-                    {/* <button className='bg-purple-600 hover:bg-purple-700 px-4  text-white  text-center rounded-md py-2 m-4'>
+                <div className="flex border-b border-gray-200 h-12 py-3 items-center">
+                  <span className="px-2">City:</span>
+                  <input
+                    className="focus:outline-none my-2 focus:border-2 rounded-lg w-3/4 lg:w-4/5 pl-2 py-2 border-purple-600"
+                    placeholder="City"
+                    {...register("city", { required: true })}
+                  />
+                </div>
+                {errors.city && (
+                  <span className="text-red-500 ml-4">City is required</span>
+                )}
+
+                <div className="flex border-b border-gray-200 h-12 py-3 items-center">
+                  <span className="px-2">State:</span>
+                  <input
+                    className="focus:outline-none focus:border-2 rounded-lg w-3/4 lg:w-4/5 pl-2 py-2 border-purple-600"
+                    placeholder="State"
+                    {...register("state", { required: true })}
+                  />
+                </div>
+                {errors.state && <span className="text-red-500 ml-4">State is required</span>}
+                <div className="flex border-b border-gray-200 h-12 py-3 items-center">
+                  <span className="px-2">Pincode:</span>
+                  <input
+                    className="focus:outline-none focus:border-2 rounded-lg w-3/4 lg:w-4/5 pl-2 py-2 border-purple-600"
+                    placeholder="pin Code"
+                    {...register("pinCode", { required: true })}
+                  />
+                </div>
+                {errors.pinCode && <span className="text-red-500 ml-4">Pincode is required</span>}
+                <div className='flex justify-end gap-x-2'>
+                  {/* <button className='bg-purple-600 hover:bg-purple-700 px-4  text-white  text-center rounded-md py-2 m-4'>
                      Reset Form
                     </button> */}
-                    <button type="submit" className='bg-purple-600 hover:bg-purple-700 px-4  text-white  text-center rounded-md py-2 m-4'>
-                     Add New Address
-                    </button>
-                  </div>
+                  <button type="submit" className='bg-purple-600 hover:bg-purple-700 px-4  text-white  text-center rounded-md py-2 m-4'>
+                    Add New Address
+                  </button>
                 </div>
-           </form>
+              </div>
+            </form>
           </div>
           {/* choose address  */}
           <div className="">
-              <h2 className="uppercase tracking-wide text-lg font-semibold text-gray-700 my-2">
-                Choose Address
-              </h2>
-              {addressArray.map((address, index)=>{
-                const {name, streetAddress, city, state, phoneNumber, email, pinCode} = address;
-                return (
-              <ul onClick={()=>setSelectdAddress((prev)=>prev===index+1?null:index+1)} className={`flex gap-x-8 border-2 text-white  ${selectdAddress===(index+1) ? "bg-purple-900":"bg-purple-600"} mb-3 border-stone-700 p-4`}>
-                <li>
-                  <span className={`px-3 ring-2  ring-black rounded-full ${selectdAddress===(index+1) ? "bg-stone-800":"bg-white"}`}></span>
-                </li>
-                <li className="flex flex-col sm:flex-row sm:flex-grow sm:justify-between">
-                  <div>
-                    <p>
-                      <span className="font-bold">Name : </span>{name}
-                    </p>
-                    <p>
-                      <span className="font-bold">City : </span>{city}
-                    </p>
-                    <p>
-                      <span className="font-bold">State : </span>{state}
-                    </p>
-                  </div>
-                  <div>
-                    <p>
-                      <span className="font-bold">Phone No : </span>{phoneNumber}
-                    </p>
-                    <p>
-                      <span className="font-bold">Pin Code : </span>{pinCode}
-                    </p>
-                  </div>
-                </li>
-              </ul>)
-              })}
+            <h2 className="uppercase tracking-wide text-lg font-semibold text-gray-700 my-2">
+              Choose Address
+            </h2>
+            {addressArray.map((address, index) => {
+              const { name, streetAddress, city, state, phoneNumber, email, pinCode } = address;
+              return (
+                <ul onClick={() => setSelectdAddress((prev) => prev === index + 1 ? null : index + 1)} className={`flex gap-x-8 border-2 text-white  ${selectdAddress === (index + 1) ? "bg-purple-900" : "bg-purple-600"} mb-3 border-stone-700 p-4`}>
+                  <li>
+                    <span className={`px-3 ring-2  ring-black rounded-full ${selectdAddress === (index + 1) ? "bg-stone-800" : "bg-white"}`}></span>
+                  </li>
+                  <li className="flex flex-col sm:flex-row sm:flex-grow sm:justify-between">
+                    <div>
+                      <p>
+                        <span className="font-bold">Name : </span>{name}
+                      </p>
+                      <p>
+                        <span className="font-bold">City : </span>{city}
+                      </p>
+                      <p>
+                        <span className="font-bold">State : </span>{state}
+                      </p>
+                    </div>
+                    <div>
+                      <p>
+                        <span className="font-bold">Phone No : </span>{phoneNumber}
+                      </p>
+                      <p>
+                        <span className="font-bold">Pin Code : </span>{pinCode}
+                      </p>
+                    </div>
+                  </li>
+                </ul>)
+            })}
           </div>
           {/* paytment mode  */}
           <div className="rounded-md">
@@ -226,7 +231,7 @@ const Checkout = () => {
                 Choose Payment Method
               </h2>
               <ul className="pl-10">
-                <li onClick={()=>setSelectedPaymentMode((prev)=>prev==="UPI"?null:"UPI")}>
+                <li onClick={() => setSelectedPaymentMode((prev) => prev === "UPI" ? null : "UPI")}>
                   <label
                     className="text-xl font-bold">
                     UPI Mode :{" "}
@@ -235,10 +240,10 @@ const Checkout = () => {
                     type="radio"
                     name="PaymentMode"
                     value="UPI"
-                    checked={selectedPaymentMode === "UPI"? true:false}
+                    checked={selectedPaymentMode === "UPI" ? true : false}
                   />{" "}
                 </li>
-                <li onClick={()=>setSelectedPaymentMode((prev)=>prev==="CASH"?null:"CASH")}>
+                <li onClick={() => setSelectedPaymentMode((prev) => prev === "CASH" ? null : "CASH")}>
                   <label
                     className="text-xl font-bold">
                     Cash :{" "}
@@ -247,13 +252,13 @@ const Checkout = () => {
                     type="radio"
                     name="PaymentMode"
                     value="CASH"
-                    checked={selectedPaymentMode === "CASH"? true:false} 
+                    checked={selectedPaymentMode === "CASH" ? true : false}
                   />{" "}
                 </li>
               </ul>
             </section>
           </div>
-          <button onClick={handleOrder}  className="bg-purple-700 px-4  lg:hidden text-white text-xl text-center mx-4 rounded-md py-2 mb-8">
+          <button onClick={handleOrder} className="bg-purple-700 px-4  lg:hidden text-white text-xl text-center mx-4 rounded-md py-2 mb-8">
             Order Now
           </button>
         </div>
@@ -264,38 +269,38 @@ const Checkout = () => {
             Order Summary
           </h1>
           <ul className="py-6 border-b space-y-6 px-8">
-          {
-            cartItemArray.map((item)=>{
-              const { id, images, price, rating, stock, category, thumbnail, title } = item.product
-              return(
-              <li className="grid grid-cols-6 gap-2 border-b-1">
-              <div className="col-span-1 self-center">
-                <img
-                  src={thumbnail}
-                  alt="Product"
-                  className="rounded w-full"
-                />
-              </div>
-              <div className="flex flex-col col-span-3 pt-2">
-                <span className="text-gray-600 text-md font-semi-bold">
-                  {title}
-                </span>
-                <span className="text-gray-400 text-sm inline-block pt-2">
-                  {category}
-                </span>
-              </div>
-              <div className="col-span-2 pt-3">
-                <div className="flex items-center space-x-2 text-sm justify-between">
-                  <span className="text-gray-400">{item.quantity} x ${price}</span>
-                  <span className="text-pink-400 font-semibold inline-block">
-                  ${price * item.quantity}
-                  </span>
-                </div>
-              </div>
-            </li>);
-            })
-          }
-           
+            {
+              cartItemArray.map((item) => {
+                const { id, images, price, rating, stock, category, thumbnail, title } = item.product
+                return (
+                  <li className="grid grid-cols-6 gap-2 border-b-1">
+                    <div className="col-span-1 self-center">
+                      <img
+                        src={thumbnail}
+                        alt="Product"
+                        className="rounded w-full"
+                      />
+                    </div>
+                    <div className="flex flex-col col-span-3 pt-2">
+                      <span className="text-gray-600 text-md font-semi-bold">
+                        {title}
+                      </span>
+                      <span className="text-gray-400 text-sm inline-block pt-2">
+                        {category}
+                      </span>
+                    </div>
+                    <div className="col-span-2 pt-3">
+                      <div className="flex items-center space-x-2 text-sm justify-between">
+                        <span className="text-gray-400">{item.quantity} x ${price}</span>
+                        <span className="text-pink-400 font-semibold inline-block">
+                          ${price * item.quantity}
+                        </span>
+                      </div>
+                    </div>
+                  </li>);
+              })
+            }
+
           </ul>
           <div className="px-8 border-b">
             <div className="flex justify-between py-4 text-gray-600">
@@ -309,7 +314,7 @@ const Checkout = () => {
           </div>
           <div className="font-semibold text-xl px-8 flex justify-between py-8 text-gray-600">
             <span>Total</span>
-            <span>$ {Math.floor(subTotal+4.99)}</span>
+            <span>$ {Math.floor(subTotal + 4.99)}</span>
           </div>
           <div className="">
             <div onClick={handleOrder} className="bg-purple-700 px-auto text-white text-xl text-center mx-4 rounded-md py-2 mb-2">
