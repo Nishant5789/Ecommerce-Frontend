@@ -1,23 +1,19 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-// import { selectUserInfo, updateUserAsync } from '../userSlice';
-import { useForm } from 'react-hook-form';
-import { selectLoggedInUser } from '../../auth/authSlice';
 import { fetchUserAddressAsync, fetchUserDataAsync, selectUserAddresses, selectUserData } from '../userSlice';
 
 export default function UserProfile() {
   const dispatch = useDispatch();
 
-  const loggedUser = useSelector(selectLoggedInUser);
   const userInfo = useSelector(selectUserData);
   const userAddressData = useSelector(selectUserAddresses);
-//   console.log(loggedUser, userInfo, userAddressData);
+  
   useEffect(()=>{
-    if(loggedUser.id != ""){
-        dispatch(fetchUserDataAsync(loggedUser.id));
-        dispatch(fetchUserAddressAsync(loggedUser.id));
+    if(userInfo.id != ""){
+        dispatch(fetchUserDataAsync());
+        dispatch(fetchUserAddressAsync());
     }
-  },[loggedUser])
+  },[userInfo])
 
   return (
     <div>

@@ -5,7 +5,7 @@ import { ToastContainer } from "react-toastify";
 import { gettoastOptions } from '../../../app/constant';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link, Navigate } from "react-router-dom";
-import { checkUserAsync, selectError, selectLoggedInUser } from "../authSlice";
+import { checkUserAsync, loginUserAsync, selectError, selectLoggedInUser } from "../authSlice";
 
 const Login = () => {
 
@@ -56,7 +56,7 @@ const Login = () => {
     const { email: Email, password: Password } = loginData;
     if (handleValidation({ Email, Password })) {
       console.log("validated");
-      dispatch(checkUserAsync({ email: loginData.email, password: loginData.password}));
+      dispatch(loginUserAsync({ email: loginData.email, password: loginData.password}));
     }
   };
 

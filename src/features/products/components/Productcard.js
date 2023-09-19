@@ -3,12 +3,10 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom'
 import { addCartItemsAsync } from '../../cart/cartSlice';
 import { getUserId } from '../../../app/constant';
-import { selectLoggedInUser } from '../../auth/authSlice';
 
 const Productcard = ({ProductDetails}) => {
 
   const dispatch = useDispatch();
-  const loggedUser = useSelector(selectLoggedInUser);
 
 
   const { brand,category,description,discountPercentage,id,images, price, rating, stock, thumbnail ,title} = ProductDetails;
@@ -73,7 +71,6 @@ const Productcard = ({ProductDetails}) => {
           </span>
           <button
             onClick={()=>dispatch(addCartItemsAsync({
-              "user":  loggedUser.id,
               "product": id
             }))}
             class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">

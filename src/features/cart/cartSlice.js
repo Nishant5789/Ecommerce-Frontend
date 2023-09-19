@@ -10,8 +10,8 @@ const initialState = {
 
 export const fetchCartItemsAsync = createAsyncThunk(
   'cart/fetchcartitems',
-  async (userId) => {
-    const {data} = await getCartItmes(userId);
+  async () => {
+    const {data} = await getCartItmes();
     return data;
   }
 );
@@ -42,8 +42,8 @@ export const removeCartItemsAsync = createAsyncThunk(
 );
 export const removeAllItemFromCartAsync = createAsyncThunk(
   'cart/removeAllItemFromCartAsync',
-  async (userId) => {
-    await removeAllItem(userId);
+  async () => {
+    await removeAllItem();
     return {};
   }
 );

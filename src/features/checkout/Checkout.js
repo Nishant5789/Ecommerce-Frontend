@@ -10,7 +10,6 @@ import 'react-toastify/dist/ReactToastify.css';
 import { ToastContainer } from "react-toastify";
 import { getUserId, gettoastOptions } from "../../app/constant";
 import { createOrderAsync, selectCurrOrderId } from "../order/orderSlice";
-import { selectLoggedInUser } from "../auth/authSlice";
 
 const Checkout = () => {
   const { register, handleSubmit, watch, reset, formState: { errors } } = useForm();
@@ -23,14 +22,13 @@ const Checkout = () => {
   const addressArray = useSelector(selectUserAddresses);
   const cartItemArray = useSelector(selectCartItems);
   const confirmationId = useSelector(selectCurrOrderId);
-  const loggedUser = useSelector(selectLoggedInUser);
 
   console.log("confirmationId", confirmationId);
 
   const onSubmit = (data) => {
     // console.log(data);
     // reset();
-    dispatch(addUserAddressAsync({addressObject:data, userId:loggedUser.id}));
+    dispatch(addUserAddressAsync({addressObject:data}));
   };
   // {
   //   "items": ["648dbb70d2ebd1b1455464b3"],
@@ -50,7 +48,7 @@ const Checkout = () => {
 
       const orderObject = {
         items: itemsIdArray, itemsQunatity: itemsQuantityArray, totalAmount: subTotal,
-        totalItems: totalItems, user: loggedUser.id, paymentMode: selectedPaymentMode, selectedAddress: addressArray[selectdAddress - 1].id
+        totalItems: totalItems, paymentMode: selectedPaymentMode, selectedAddress: addressArray[selectdAddress - 1].id
       }
       console.log(orderObject);
       dispatch(createOrderAsync(orderObject));
@@ -70,13 +68,13 @@ const Checkout = () => {
   }, [cartItemArray]);
 
   useEffect(() => {
-    dispatch(fetchUserAddressAsync(loggedUser.id));
-    dispatch(fetchCartItemsAsync(loggedUser.id));
+    dispatch(fetchUserAddressAsync());
+    dispatch(fetchCartItemsAsync());
   }, [])
 
   useEffect(() => {
     if (confirmationId) {
-      dispatch(removeAllItemFromCartAsync(loggedUser.id));
+      dispatch(removeAllItemFromCartAsync());
       navigate(`/order/${confirmationId}`);
     }
   }, [confirmationId])

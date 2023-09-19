@@ -8,22 +8,22 @@ const initialState = {
 };
 export const fetchUserDataAsync = createAsyncThunk(
   'user/fetchUserDataAsync',
-  async (userId) => {
-    const {data} = await getUserData(userId);
+  async () => {
+    const {data} = await getUserData();
     return data;
   }
 );
 export const fetchUserAddressAsync = createAsyncThunk(
   'user/fetchUserAddressesAsync',
-  async (userId) => {
-    const {data} = await getUserAddresses(userId);
+  async () => {
+    const {data} = await getUserAddresses();
     return data;
   }
 );
 export const addUserAddressAsync = createAsyncThunk(
   'user/addUserAddressAsync',
-  async ({addressObject, userId}) => {
-    const {data} = await addUserAddress(addressObject, userId);
+  async ({addressObject}) => {
+    const {data} = await addUserAddress(addressObject);
     return data;
   }
 );

@@ -1,14 +1,14 @@
 import axios from "axios";
 
-export function getUserData(userId) {
-    return axios.get(`http://localhost:8080/user/getuserdata/${userId}`);
+export function getUserData() {
+    return axios.get(`http://localhost:8080/user/getuserdata/`);
 }
 
-export function getUserAddresses(userId) {
-    return axios.get(`http://localhost:8080/address/${userId}`);
+export function getUserAddresses() {
+    return axios.get(`http://localhost:8080/address`);
 }
-export function addUserAddress(addressObject, userId) {
-    return axios.post(`http://localhost:8080/address/${userId}`, addressObject);
+export function addUserAddress(addressObject) {
+    return axios.post(`http://localhost:8080/address`, addressObject);
 }
 export function updateUserAddress(updatedata, addressId) {
     return axios.put(`http://localhost:8080/address/${addressId}`, updatedata);

@@ -6,17 +6,15 @@ import CartItems from "./CartItems";
 import { fetchCartItemsAsync, selectCartItems } from "./cartSlice";
 import Subtotal from "./SubtotalMenu";
 import SubtotalMenu from "./SubtotalMenu";
-import { selectLoggedInUser } from "../auth/authSlice";
 
 const Cart = () => {
   const dispatch = useDispatch();
   const cartItemArray = useSelector(selectCartItems);
-  const loggedUser = useSelector(selectLoggedInUser);
   const [subTotal, setSubtotal] = useState(0);
   // console.log(cartItemArray);
 
   useEffect(() => {
-    dispatch(fetchCartItemsAsync(loggedUser.id));
+    dispatch(fetchCartItemsAsync());
   }, []);
 
   useEffect(() => {
