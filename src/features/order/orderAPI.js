@@ -5,7 +5,7 @@ export function createOrder(orderObject) {
     return axios.post("http://localhost:8080/order", orderObject);
 }
 export function getAllOrderByUser() {
-    return axios.get(`http://localhost:8080/order/${getUserId()}`);
+    return axios.get(`http://localhost:8080/order/user`);
 }
 export function updateOrder(updateOrderField, orderId) {
     return axios.patch(`http://localhost:8080/order/${orderId}`, updateOrderField);

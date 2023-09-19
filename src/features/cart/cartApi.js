@@ -2,7 +2,7 @@ import axios from "axios";
 import { getUserId } from "../../app/constant";
 
 export function getCartItmes() {
-    return axios.get(`http://localhost:8080/cart/${getUserId()}`)
+    return axios.get(`http://localhost:8080/cart/`)
 }
 export function addItem(cartItem) {
     return axios.post(`http://localhost:8080/cart/`, cartItem);
@@ -14,7 +14,7 @@ export function removeItem(cartItemId) {
     return axios.delete(`http://localhost:8080/cart/${cartItemId}`);
 }
 export function removeAllItem() {
-    return axios.delete(`http://localhost:8080/cart/`);
+    return axios.post(`http://localhost:8080/cart/removeAllitems`);
 }
 
 

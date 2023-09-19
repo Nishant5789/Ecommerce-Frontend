@@ -7,6 +7,7 @@ const Order = () => {
   const dispatch = useDispatch();
   const orderArray = useSelector(selectOrders);
 
+
   useEffect(()=>{
     dispatch(fetchAllOrdersAsync());
   },[])
@@ -34,7 +35,7 @@ const Order = () => {
                   <li className='font-bold text-xl'>{title}</li>
                   <li>brand : {brand}</li>
                   <li>category : {category}</li>
-                  <li>Qty: <span className='font-bold'>{order.itemsQunatity[index]}</span></li>
+                  {/* <li>Qty: <span className='font-bold'>{order.itemsQunatity[index]}</span></li> */}
                 </ul>
               </div>
             )

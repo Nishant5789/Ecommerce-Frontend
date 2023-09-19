@@ -13,7 +13,7 @@ const ProductList = ({currentPage}) => {
     const dispatch = useDispatch();
     useEffect(()=>{
         if(queryUrlObject) {
-            // console.log("called")
+            console.log("called")
             dispatch(fetchProductsAsync(queryUrlObject));
         }
     },[queryUrlObject])
@@ -23,7 +23,7 @@ const ProductList = ({currentPage}) => {
        {/* <div className='h-screen'> */}
     {
         ProductArray && ProductArray.map((ProductDetails, index)=>{
-          return (<Productcard ProductDetails={ProductDetails} />)
+          return (<Productcard ProductDetails={ProductDetails} key={index}/>)
         })
     }
 

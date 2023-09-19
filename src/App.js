@@ -9,20 +9,23 @@ import ProductDetail from "./features/products/components/ProductDetail";
 import Order from "./features/order/components/Order";
 import ConfirmationOrder from "./features/order/components/ConfirmationOrder";
 import Admin from "./features/admin/admin";
+import Protected from "./features/auth/components/Protected";
+import UserProfile from "./features/user/components/UserProfile";
 
 function App() { 
   return (
       <BrowserRouter>
         <Routes>
-          <Route path="/" element={<Products/>}/>
+          <Route path="/" element={<Protected><Products/></Protected>}/>
           <Route path="/admin/*" element={<Admin/>}/>
           <Route path="/product/:productId" element={<ProductDetail/>}/>
           <Route path="/login" element={<Login/>}/>
           <Route path="/register" element={<Register/>}/>
-          <Route path="/cart" element={<Cart/>}/>
-          <Route path="/checkout" element={<Checkout/>}/>
-          <Route path="/order" element={<Order/>}/>
-          <Route path="/order/:confirmationId" element={<ConfirmationOrder/>}/>
+          <Route path="/cart" element={<Protected><Cart/></Protected>}/>
+          <Route path="/checkout" element={<Protected><Checkout/></Protected>}/>
+          <Route path="/order" element={<Protected><Order/></Protected>}/>
+          <Route path="/profile" element={<Protected><UserProfile/></Protected>}/>
+          <Route path="/order/:confirmationId" element={<Protected><ConfirmationOrder/></Protected>}/>
         </Routes>   
       </BrowserRouter>
   );

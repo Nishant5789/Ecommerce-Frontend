@@ -1,22 +1,37 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import { addUserAddress, getUserAddresses } from './userApi';
+import { addUserAddress, getUserAddresses, getUserData } from './userApi';
 
 const initialState = {
   Addresses: [], 
+  UserData:{},
   status: 'idle',
 };
-
+export const fetchUserDataAsync = createAsyncThunk(
+  'user/fetchUserDataAsync',
+  async () => {
+    const {data} = await getUserData();
+    return data;
+  }
+);
 export const fetchUserAddressAsync = createAsyncThunk(
-  'cart/fetchUserAddressesAsync',
+  'user/fetchUserAddressesAsync',
   async () => {
     const {data} = await getUserAddresses();
     return data;
   }
 );
 export const addUserAddressAsync = createAsyncThunk(
-  'cart/addUserAddressAsync',
-  async (addressObject) => {
+  'user/addUserAddressAsync',
+  async ({addressObject}) => {
     const {data} = await addUserAddress(addressObject);
+    return data;
+  }
+);
+
+export const updateUserAddressAsync = createAsyncThunk(
+  'user/updateUserAddressAsync',
+  async ({updatedata, addressId}) => {
+    const {data} = await addUserAddress(updatedata, addressId);
     return data;
   }
 );
@@ -29,6 +44,13 @@ export const userSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
+      .addCase(fetchUserDataAsync.pending, (state) => {
+        state.status = 'loading';
+      })
+      .addCase(fetchUserDataAsync.fulfilled, (state, action) => {
+        state.status = 'idle';
+        state.UserData = action.payload;
+      })
       .addCase(fetchUserAddressAsync.pending, (state) => {
         state.status = 'loading';
       })
@@ -43,11 +65,20 @@ export const userSlice = createSlice({
         state.status = 'idle';
         state.Addresses.push(action.payload);
       })
+      .addCase(updateUserAddressAsync.pending, (state) => {
+        state.status = 'loading';
+      })
+      .addCase(updateUserAddressAsync.fulfilled, (state, action) => {
+        state.status = 'idle';
+        const index = state.Addresses.findIndex((address)=>address.id === action.payload.id);
+        state.Addresses[index] = action.payload.updatedaddress;
+      })
   },
 });
 
 // export const {  } = userSlice.actions;
 
 export const selectUserAddresses = (state)=>state.user.Addresses;
+export const selectUserData = (state)=>state.user.UserData;
 
 export default userSlice.reducer;
