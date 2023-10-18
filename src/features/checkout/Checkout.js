@@ -73,8 +73,10 @@ const Checkout = () => {
   }, [])
 
   useEffect(() => {
-    if (confirmationId) {
+    if (selectdAddress && selectedPaymentMode && confirmationId ) {
       dispatch(removeAllItemFromCartAsync());
+      // setSelectdAddress(null);
+      // setSelectedPaymentMode(null);
       navigate(`/order/${confirmationId}`);
     }
   }, [confirmationId])

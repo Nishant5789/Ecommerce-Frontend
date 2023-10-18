@@ -1,14 +1,5 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import { checkUser, createUser, loginUser } from './authApi';
-// import {
-// //   loginUser,
-//   createUser,
-// //   signOut,
-// //   checkAuth,
-// //   resetPasswordRequest,
-// //   resetPassword,
-// } from './authAPi';
-// import { updateUser } from '../user/userAPI';
+import { checkUser, createUser, loginUser, signOut } from './authApi';
 
 const initialState = {
   loggedInUserToken: null, // this should only contain user identity => 'id'/'role'
@@ -34,7 +25,7 @@ export const loginUserAsync = createAsyncThunk(
   async (loginInfo, { rejectWithValue }) => {
     try {
       const response = await loginUser(loginInfo);
-      localStorage.setItem('jwt', response.data);
+      // localStorage.setItem('jwt', response.data);
       return response.data;
     } catch (error) {
       console.log(error);
@@ -53,17 +44,7 @@ export const checkUserAsync = createAsyncThunk('user/checkUser', async (loginDat
     }
   });
 
-// export const checkAuthAsync = createAsyncThunk('user/checkAuth', async () => {
-//   try {
-//     const response = await checkAuth();
-//     return response.data;
-//   } catch (error) {
-//     console.log(error);
-//   }
-// });
-
-// export const resetPasswordRequestAsync = createAsyncThunk(
-//   'user/resetPasswordRequest',
+ 
 //   async (email,{rejectWithValue}) => {
 //     try {
 //       const response = await resetPasswordRequest(email);
@@ -91,14 +72,14 @@ export const checkUserAsync = createAsyncThunk('user/checkUser', async (loginDat
 //   }
 // );
 
-// export const signOutAsync = createAsyncThunk(
-//   'user/signOut',
-//   async () => {
-//     const response = await signOut();
-//     // The value we return becomes the `fulfilled` action payload
-//     return response.data;
-//   }
-// );
+export const signOutAsync = createAsyncThunk(
+  'user/signOut',
+  async () => {
+    const response = await signOut();
+    // The value we return becomes the `fulfilled` action payload
+    return response.data;
+  }
+);
 
 export const authSlice = createSlice({
   name: 'user',
@@ -125,13 +106,13 @@ export const authSlice = createSlice({
         console.log(action.payload);
         state.error = action.payload;
       })
-    //   .addCase(signOutAsync.pending, (state) => {
-    //     state.status = 'loading';
-    //   })
-    //   .addCase(signOutAsync.fulfilled, (state, action) => {
-    //     state.status = 'idle';
-    //     state.loggedInUserToken = null;
-    //   })
+      .addCase(signOutAsync.pending, (state) => {
+        state.status = 'loading';
+      })
+      .addCase(signOutAsync.fulfilled, (state, action) => {
+        state.status = 'idle';
+        state.loggedInUserToken = null;
+      })
       .addCase(loginUserAsync.pending, (state) => {
             state.status = 'loading';
           })
@@ -179,10 +160,5 @@ export const authSlice = createSlice({
 
 export const selectLoggedInUser = (state) => state.auth.loggedInUserToken;
 export const selectError = (state) => state.auth.error;
-// export const selectUserChecked = (state) => state.auth.userChecked;
-// export const selectMailSent = (state) => state.auth.mailSent;
-// export const selectPasswordReset = (state) => state.auth.passwordReset;
-
-// export const { } = authSlice.actions;
 
 export default authSlice.reducer;

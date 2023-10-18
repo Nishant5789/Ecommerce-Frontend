@@ -1,13 +1,17 @@
+/* eslint-disable no-undef */
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { Link, useParams } from 'react-router-dom'
+import { Link, useNavigate, useParams } from 'react-router-dom'
 import { fetchProductByIdAsync, selectSingleProduct } from '../productSlice'
 import Spinner from '../../navbar & spinner/Spinner'
+import { addCartItemsAsync } from '../../cart/cartSlice'
 
 
 const ProductDetail = () => {
     const {productId} = useParams();
+    const navigate = useNavigate();
+
     const [isProductFetch, setIsProductFetch] = useState(false);
     const [selectedImage, setSelectedImage] = useState(0);
 
@@ -24,11 +28,18 @@ const ProductDetail = () => {
         }
     },[productId])
 
+    const handleAddtocart = (id)=>{
+      dispatch(addCartItemsAsync({
+        "product": id
+      }))
+      navigate("/cart");
+    }
+
   return (
     <div className="py-6">
  <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-6">
    {
-    isProductFetch ?  renderProductDetails(ProductDetails,selectedImage, setSelectedImage )
+    isProductFetch ?  renderProductDetails(ProductDetails,selectedImage, setSelectedImage, handleAddtocart )
       : <Spinner/>
    }
   </div>
@@ -36,7 +47,7 @@ const ProductDetail = () => {
   )
 }
 
-const renderProductDetails = (ProductDetails, selectedImage, setSelectedImage)=>{
+const renderProductDetails = (ProductDetails, selectedImage, setSelectedImage, handleAddtocart)=>{
   
   const {brand, category, description, discountPercentage, id, images, price, rating, stock, thumbnail, title} = ProductDetails;
   
@@ -96,14 +107,13 @@ const renderProductDetails = (ProductDetails, selectedImage, setSelectedImage)=>
           <option value="5">5</option>
         </select>
       </div>
-      <Link to="/cart">
       <button
         type="button"
-        className="h-14 px-6 py-2 font-semibold rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white"
+        onClick={()=>handleAddtocart(id)}     
+           className="h-14 px-6 py-2 font-semibold rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white"
       >
         Add to Cart
       </button>
-      </Link>
     </div>
   </div>
 </div>)
